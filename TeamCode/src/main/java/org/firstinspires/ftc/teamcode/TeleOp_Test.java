@@ -38,8 +38,6 @@ public class TeleOp_Test extends LinearOpMode
 
         hookServo = hardwareMap.servo.get("hookServo");
 
-//        hookServo.getPosition(HOOK_DOWN_POSITION);
-//        hookServo.getPosition(HOOK_UP_POSITION);
 
         //initilization positions
         hookServo.setPosition(HOOK_DOWN_POSITION);
@@ -49,52 +47,19 @@ public class TeleOp_Test extends LinearOpMode
 
         while(opModeIsActive())
         {
-            //controls for moving fowarding and backward
-            if(gamepad1.left_stick_y > 0) //drive forward
-            {
-                motorFrontLeft.setPower(gamepad1.left_stick_y);
-                motorFrontRight.setPower(gamepad1.left_stick_y);
-                motorBackLeft.setPower(gamepad1.left_stick_y);
-                motorBackRight.setPower(gamepad1.left_stick_y);
-            }
 
-            else if(gamepad1.left_stick_y < 0) //drive backward
-            {
-                motorFrontLeft.setPower(-gamepad1.left_stick_y);
-                motorFrontRight.setPower(-gamepad1.left_stick_y);
-                motorBackLeft.setPower(-gamepad1.left_stick_y);
-                motorBackRight.setPower(-gamepad1.left_stick_y);
-            }
+            //controls for drivetrain
+            motorFrontLeft.setPower(gamepad1.left_stick_y);
+            motorBackLeft.setPower(gamepad1.left_stick_y);
+            motorFrontRight.setPower(gamepad1.right_stick_y);
+            motorBackRight.setPower(gamepad1.right_stick_y);
 
-
-            //controls for turning
-            if(gamepad1.right_stick_x > 0) //turn right
-            {
-                motorFrontLeft.setPower(gamepad1.right_stick_x);
-                motorFrontRight.setPower(-gamepad1.right_stick_x);
-                motorBackLeft.setPower(gamepad1.right_stick_x);
-                motorBackRight.setPower(-gamepad1.right_stick_x);
-            }
-
-            else if(gamepad1.right_stick_x < 0) //turn left
-            {
-                motorFrontLeft.setPower(-gamepad1.right_stick_x);
-                motorFrontRight.setPower(gamepad1.right_stick_x);
-                motorBackLeft.setPower(-gamepad1.right_stick_x);
-                motorBackRight.setPower(gamepad1.right_stick_x);
-            }
 
 
             //controls for extendo
-            if(gamepad1.right_trigger > 0) //extends
-            {
-                motorExtendo.setPower(gamepad1.right_trigger);
-            }
+            motorExtendo.setPower(gamepad1.right_trigger); //extend
+            motorExtendo.setPower(-gamepad1.left_trigger); //retracts
 
-            else if(gamepad1.left_trigger > 0) //retracts
-            {
-                motorExtendo.setPower(-gamepad1.left_trigger);
-            }
 
 
             if(gamepad1.a) //hook down
@@ -108,15 +73,6 @@ public class TeleOp_Test extends LinearOpMode
             }
 
 
-//            if(gamepad1.a)
-//            {
-//                hookServo.getPosition(HOOK_DOWN_POSITION);
-//            }
-//
-//            if(gamepad1.x)
-//            {
-//                hookServo.getPosition(HOOK_UP_POSITION);
-//            }
 
 
 
