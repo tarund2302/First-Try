@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "TeleOp_Test", group = "OpMode")
+@TeleOp(name = "TeleOp_Test")
 public class TeleOp_Test extends LinearOpMode
 {
 
@@ -76,7 +76,7 @@ public class TeleOp_Test extends LinearOpMode
 
 
 
-            idle();
+
         }
     }
 
