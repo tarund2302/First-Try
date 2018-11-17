@@ -13,12 +13,14 @@ public class AutoOp_Test extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    //declare motors
     DcMotor motorFrontLeft;
     DcMotor motorFrontRight;
     DcMotor motorBackLeft;
     DcMotor motorBackRight;
     DcMotor motorExtendo;
 
+    //declare servos
     Servo hookServo;
     Servo markerServo;
 
@@ -37,13 +39,15 @@ public class AutoOp_Test extends LinearOpMode {
         motorFrontLeft = hardwareMap.dcMotor.get("back_right_wheel");
         motorExtendo = hardwareMap.dcMotor.get("extendo");
 
+        //reverse left side of the drivetrain
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
         //initialize servos
-        hookServo = hardwareMap.servo.get("Hook");
-        markerServo = hardwareMap.servo.get("Marker");
+        hookServo = hardwareMap.servo.get("hook");
+        markerServo = hardwareMap.servo.get("marker");
 
+        //starting positions for servos
         hookServo.setPosition(HOOK_UP_POSITION);
         markerServo.setPosition(MARKER_UP_POSITION);
 
@@ -57,27 +61,32 @@ public class AutoOp_Test extends LinearOpMode {
         sleep(1500);
         hookServo.setPosition(HOOK_DOWN_POSITION);
 
+        //drive to depot
         motorFrontLeft.setPower(0.5);
         motorFrontRight.setPower(0.5);
         motorBackLeft.setPower(0.5);
         motorBackRight.setPower(0.5);
         sleep(5000);
 
+        //stop
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
 
+        //drop marker
         markerServo.setPosition(MARKER_DOWN_POSITION);
         sleep(1000);
         markerServo.setPosition(MARKER_UP_POSITION);
 
+        //turn towards crater
         motorFrontLeft.setPower(-0.5);
         motorFrontRight.setPower(0.5);
         motorBackLeft.setPower(-0.5);
         motorBackRight.setPower(0.5);
         sleep(500);
 
+        //drive towards crater
         motorFrontLeft.setPower(0.5);
         motorFrontRight.setPower(0.5);
         motorBackLeft.setPower(0.5);
