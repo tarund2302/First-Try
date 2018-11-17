@@ -6,12 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 //v2.1 code
 
 @TeleOp(name = "TeleOp_Test")
 public class TeleOp_Test extends LinearOpMode
 {
+    private ElapsedTime runtime = new ElapsedTime();
+
     //declare motors
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
@@ -57,6 +60,7 @@ public class TeleOp_Test extends LinearOpMode
         motorExtendo.setPower(0); //stops motor
 
         waitForStart();
+        runtime.reset();
 
         while(opModeIsActive())
         {
@@ -85,7 +89,10 @@ public class TeleOp_Test extends LinearOpMode
                 hookServo.setPosition(HOOK_UP_POSITION);
             }
 
-
+            // Show the elapsed game time and wheel power. 
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight);
+            telemetry.update();
 
 
 
