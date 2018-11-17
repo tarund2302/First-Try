@@ -19,7 +19,7 @@ public class TeleOp_Test extends LinearOpMode
 
     private Servo hookServo;
 
-    private static final double HOOK_DOWN_POSITION = 1;
+    private static final double HOOK_DOWN_POSITION = -1;
     private static final double HOOK_UP_POSITION = 0;
 
     @Override
