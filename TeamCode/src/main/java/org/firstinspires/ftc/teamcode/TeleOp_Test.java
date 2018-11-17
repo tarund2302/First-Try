@@ -7,40 +7,53 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+//v2.1 code
+
 @TeleOp(name = "TeleOp_Test")
 public class TeleOp_Test extends LinearOpMode
 {
-
+    //declare motors
     private DcMotor motorFrontLeft;
     private DcMotor motorFrontRight;
     private DcMotor motorBackLeft;
     private DcMotor motorBackRight;
     private DcMotor motorExtendo;
 
+    //declare servos
     private Servo hookServo;
+    private Servo markerServo;
 
+    //servo positions
     private static final double HOOK_DOWN_POSITION = -1;
     private static final double HOOK_UP_POSITION = 0;
+    private static final double MARKER_UP_POSITION = 0;
+    private static final double MARKER_DOWN_POSITION = 0.7;
 
     @Override
     public void runOpMode () throws InterruptedException
     {
+        //initialize drivetrain motors
+        motorFrontLeft = hardwareMap.dcMotor.get("front_left_wheel");
+        motorFrontRight = hardwareMap.dcMotor.get("front_right_wheel");
+        motorBackLeft = hardwareMap.dcMotor.get("back_left_wheel");
+        motorBackRight = hardwareMap.dcMotor.get("back_right_wheel");
 
-        motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
-        motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
-        motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-        motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+        //initialize extendo
+        motorExtendo = hardwareMap.dcMotor.get("extendo");
 
-        motorExtendo = hardwareMap.dcMotor.get("motorExtendo");
-
+        //reverse left side of the drivetrain
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        motorFrontRight.setDirection(DcMotor.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        hookServo = hardwareMap.servo.get("hookServo");
+        //initialize servos
+        hookServo = hardwareMap.servo.get("hook");
+        markerServo = hardwareMap.servo.get("marker");
 
-
-        //initilization positions
+        //starting positions for servos
         hookServo.setPosition(HOOK_DOWN_POSITION);
+        markerServo.setPosition(MARKER_UP_POSITION);
+
+        //stop extendo motor
         motorExtendo.setPower(0); //stops motor
 
         waitForStart();
