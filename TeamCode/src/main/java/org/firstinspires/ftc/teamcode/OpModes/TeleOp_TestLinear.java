@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;//
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //v2.1 code
 
 @TeleOp(name = "TeleOp_Test")
-public class TeleOp_Test extends LinearOpMode
+@Disabled
+public class TeleOp_TestLinear extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -31,6 +33,7 @@ public class TeleOp_Test extends LinearOpMode
     private static final double HOOK_UP_POSITION = 0;
     private static final double MARKER_UP_POSITION = 0;
     private static final double MARKER_DOWN_POSITION = 0.7;
+
 
     @Override
     public void runOpMode () throws InterruptedException
