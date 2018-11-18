@@ -10,9 +10,9 @@ public interface Constants {
     double MARKER_UP_POSITION = 0;
     double MARKER_DOWN_POSITION = 0.7;
 
-    double NEVEREST_20_COUNTS_PER_REV = 560; //extendo motors
-    double NEVEREST_40_COUNTS_PER_REV = 1120; //drivetrain motors
-    double ORBITAL_3_7_COUNTS_PER_REV = 103; //actuator motors
+    double NEVEREST_20_COUNTS_PER_REV = 560; //extendo motor ticks
+    double NEVEREST_40_COUNTS_PER_REV = 1120; //drivetrain motor ticks
+    double ORBITAL_3_7_COUNTS_PER_REV = 103; //actuator motor ticks
 
     double WHEEL_DIAMETER_INCHES = 4.0;
     double DRIVE_GEAR_REDUCTION = 2.0; //gear ratio
