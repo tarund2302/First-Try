@@ -42,7 +42,7 @@ public class Hardware {
             motorExtendo2 = hardwareMap.dcMotor.get("Extendo2");
             motorActuator = hardwareMap.dcMotor.get("Actuator");
 
-            //initialize servos
+            //initialize servos (hook & marker)
             hookServo = hardwareMap.servo.get("hook");
             markerServo = hardwareMap.servo.get("marker");
 
