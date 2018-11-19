@@ -15,10 +15,11 @@ public interface Constants {
     double ORBITAL_3_7_COUNTS_PER_REV = 103; //actuator motor ticks
 
     double WHEEL_DIAMETER_INCHES = 4.0;
-    double DRIVE_GEAR_REDUCTION = 2.0; //gear ratio
+    double DRIVE_GEAR_REDUCTION = 0.5; //gear ratio (driven gear / driving gear)
     double COUNTS_PER_INCH = (NEVEREST_40_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
-
+    double DRIVE_SPEED = 0.5;
+    double TURN_SPEED = 0.2;
 
 
 }
