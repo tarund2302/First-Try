@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.AutoOpModes;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //v1 code
-
+//basic auto code
 @Autonomous(name = "AutoOp_Test")
 public class AutoOp_Test extends LinearOpMode {
 
