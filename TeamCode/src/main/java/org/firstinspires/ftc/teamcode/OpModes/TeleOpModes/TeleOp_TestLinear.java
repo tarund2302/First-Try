@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOpModes;
 
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;//
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //v2.1 code
-
+//not going to be used
 @TeleOp(name = "TeleOp_Test")
 @Disabled
 public class TeleOp_TestLinear extends LinearOpMode
