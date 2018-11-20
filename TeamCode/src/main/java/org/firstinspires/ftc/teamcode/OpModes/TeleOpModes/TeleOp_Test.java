@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
 //v3 teleop code made by Tarun Dasari, 3846 Maelstrom Rookie Programmer
 //last update: November 17, 2018
@@ -15,6 +16,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 public class TeleOp_Test extends OpMode implements Constants {
 
     private Hardware robot = new Hardware();
+    private Drivetrain drivetrain = new Drivetrain(hardwareMap);
+
 
     @Override
     public void init() {
@@ -34,10 +37,8 @@ public class TeleOp_Test extends OpMode implements Constants {
     public void loop() {
 
         //controls for drivetrain
-        robot.motorFrontLeft.setPower(gamepad1.left_stick_y);
-        robot.motorFrontRight.setPower(gamepad1.left_stick_y);
-        robot.motorBackLeft.setPower(gamepad1.left_stick_y);
-        robot.motorBackRight.setPower(gamepad1.left_stick_y);
+        drivetrain.leftDrive(gamepad1.left_stick_y);
+        drivetrain.rightDrive(gamepad1.right_stick_y);
 
 
 
@@ -85,6 +86,18 @@ public class TeleOp_Test extends OpMode implements Constants {
             robot.hookServo.setPosition(HOOK_UP_POSITION);
         }
 
+        //invert drivetrain controls
+        if(gamepad1.y)
+        {
+            drivetrain.leftDrive(-gamepad1.left_stick_y);
+            drivetrain.rightDrive(-gamepad1.left_stick_y);
+        }
+
+        else //leave controls as normal
+        {
+            drivetrain.leftDrive(gamepad1.left_stick_y);
+            drivetrain.rightDrive(gamepad1.left_stick_y);
+        }
 
         // Show the speed of drivetrain motors
         telemetry.addData("Left Front Motor Speed: ", robot.motorFrontLeft.getPower());
