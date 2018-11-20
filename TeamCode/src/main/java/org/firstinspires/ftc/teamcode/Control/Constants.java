@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.Control;
 public interface Constants {
 
     //hook positions
-    double HOOK_UP_POSITION = 1;
-    double HOOK_DOWN_POSITION = 0;
+    double HOOK_UP_POSITION = 0;
+    double HOOK_DOWN_POSITION = 1;
 
     //marker positions
-    double MARKER_UP_POSITION = 0;
-    double MARKER_DOWN_POSITION = 0.7;
+    double MARKER_UP_POSITION = 1;
+    double MARKER_DOWN_POSITION = -1;
 
     double NEVEREST_20_COUNTS_PER_REV = 560; //extendo motor ticks
     double NEVEREST_40_COUNTS_PER_REV = 1120; //drivetrain motor ticks
