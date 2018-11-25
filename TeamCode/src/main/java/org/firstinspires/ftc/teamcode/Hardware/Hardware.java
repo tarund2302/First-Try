@@ -4,12 +4,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
+import org.firstinspires.ftc.teamcode.Control.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
-public class Hardware {
+public class Hardware implements Constants {
 
     HardwareMap hardwareMap;
 
-//    public Telemetry telemetry;
+    public AutonomousOpMode auto;
+
+    public Telemetry telemetry;
 
     public Servo hookServo;
 
@@ -26,34 +31,42 @@ public class Hardware {
     public DcMotor motorExtendo2;
     public DcMotor motorActuator;
 
+    public Drivetrain drivetrain;
 
     public void init (HardwareMap hardwareMap)
     {
         this.hardwareMap = hardwareMap;
 
-            //initialize drivetrain
-            motorFrontLeft = hardwareMap.dcMotor.get("FrontLeft");
-            motorFrontRight = hardwareMap.dcMotor.get("FrontRight");
-            motorBackLeft = hardwareMap.dcMotor.get("BackLeft");
-            motorBackRight = hardwareMap.dcMotor.get("BackRight");
+        //initialize drivetrain
+        motorFrontLeft = hardwareMap.dcMotor.get("FrontLeft");
+        motorFrontRight = hardwareMap.dcMotor.get("FrontRight");
+        motorBackLeft = hardwareMap.dcMotor.get("BackLeft");
+        motorBackRight = hardwareMap.dcMotor.get("BackRight");
+
+        //reverse left side of drivetrain
+        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
+        //initialize extendo & actuator
+        motorExtendo1 = hardwareMap.dcMotor.get("Extendo1");
+        motorExtendo2 = hardwareMap.dcMotor.get("Extendo2");
+        motorActuator = hardwareMap.dcMotor.get("Actuator");
 
+        //initialize servos (hook & marker)
+        hookServo = hardwareMap.servo.get("hook");
+        markerServo = hardwareMap.servo.get("marker");
 
-            //initialize extendo & actuator
-            motorExtendo1 = hardwareMap.dcMotor.get("Extendo1");
-            motorExtendo2 = hardwareMap.dcMotor.get("Extendo2");
-            motorActuator = hardwareMap.dcMotor.get("Actuator");
-
-            //initialize servos (hook & marker)
-            hookServo = hardwareMap.servo.get("hook");
-            markerServo = hardwareMap.servo.get("marker");
-
-
+        drivetrain = new Drivetrain(Hardware.this);
 
     }
 
+    public void setAuto(AutonomousOpMode auto, Telemetry telemetry)
+    {
+        this.auto = auto;
+        this.telemetry = telemetry;
 
+    }
 
 
 
