@@ -1,43 +1,69 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
+import org.firstinspires.ftc.teamcode.Control.PIDController;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 
 //will be implemented later
 public class Drivetrain implements Constants {
 
+    private DcMotor motorFrontLeft;
+    private DcMotor motorFrontRight;
+    private DcMotor motorBackLeft;
+    private DcMotor motorBackRight;
+    public Drivetrain drivetrain;
+
     private Telemetry telemetry;
+    private AutonomousOpMode auto;
     private Hardware hardware;
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Hardware robot = new Hardware();
+    //private Hardware robot = new Hardware();//
 
-    public Drivetrain(HardwareMap hardwareMap)
+    public Drivetrain(Hardware hardwareMap)
     {
-        //this.hardware = hardware;//
-        hardware.init(hardwareMap);
+        this.hardware = hardwareMap;
+        motorFrontLeft = hardware.motorFrontLeft;
+        motorFrontRight = hardware.motorFrontRight;
+        motorBackLeft = hardware.motorBackLeft;
+        motorBackRight = hardware.motorBackRight;
+        //auto = hardware.auto;
+        //hardware.init(hardwareMap);//
+        //telemetry = hardware.telemetry;
+
+        //reverse left side of drivetrain
+        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
     }
+
+
+
+
+
 
     //left drive contorls
     public void leftDrive(double power)
     {
-        robot.motorFrontLeft.setPower(power);
-        robot.motorBackLeft.setPower(power);
+        hardware.motorFrontLeft.setPower(power);
+        hardware.motorBackLeft.setPower(power);
 
     }
 
     //right drive controls
     public void rightDrive(double power)
     {
-        robot.motorFrontRight.setPower(power);
-        robot.motorBackRight.setPower(power);
+        hardware.motorFrontRight.setPower(power);
+        hardware.motorBackRight.setPower(power);
     }
 
     //stop drivetrain
@@ -51,41 +77,92 @@ public class Drivetrain implements Constants {
     public void eReset()
     {
         hardware.motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hardware.motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hardware.motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hardware.motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hardware.motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
+        //send data showing encoder reset
+        telemetry.addData("Path0", "Starting at %7d :%7d",
+                drivetrain.motorFrontLeft.getCurrentPosition(),
+                drivetrain.motorBackLeft.getCurrentPosition(),
+                drivetrain.motorFrontRight.getCurrentPosition(),
+                drivetrain.motorBackRight.getCurrentPosition());
+        telemetry.update();
     }
 
-    public void driveDistance(double speed, double leftDistance,
-                              double rightDistance, double TimeoutS)
+    public void driveDistance(/*double speed, double leftDistance,
+                              double rightDistance, */ double distance/*, double TimeoutS*/)
     {
-        int newLeftTarget;
-        int newRightTarget;
+        //int newLeftTarget;
+        //int newRightTarget;
+        //int newTarget;
 
+        PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
         eReset();
-        newLeftTarget = hardware.motorFrontLeft.getCurrentPosition() + (int) (leftDistance * COUNTS_PER_INCH);
-        newRightTarget = hardware.motorFrontRight.getCurrentPosition() + (int) (rightDistance * COUNTS_PER_INCH);
+        double counts = (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION*NEVEREST_40_COUNTS_PER_REV;
+        long startTime = System.nanoTime();
+        long stopState = 0;
 
-        hardware.motorFrontLeft.setTargetPosition(newLeftTarget);
-        hardware.motorFrontRight.setTargetPosition(newRightTarget);
+        while(opModeIsActive() && (stopState <= 1000))
+        {
+            double avg = ((hardware.motorFrontLeft.getCurrentPosition())+(hardware.motorBackLeft.getCurrentPosition()))/2;
+            double power = controlDrive.power(counts,avg);
+            telemetry.addData("Power", power);
+            telemetry.addData("Distance", countsToDistance(avg));
 
-        robot.motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.motorFrontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDrive(power);
+            rightDrive(power);
+
+            if(Math.abs(counts-avg)<= distanceToCounts(DISTANCE_TOLERANCE))
+            {
+                telemetry.addData("Error:", Math.abs(counts-avg));
+                stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            }
+
+            else{
+                startTime = System.nanoTime();
+            }
+            telemetry.update();
+
+        }
+
+
+        /*newLeftTarget = hardware.motorFrontLeft.getCurrentPosition() + (int) (leftDistance * COUNTS_PER_INCH);
+        newRightTarget = hardware.motorFrontRight.getCurrentPosition() + (int) (rightDistance * COUNTS_PER_INCH);*//*
+        newTarget = (hardware.motorFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH))
+                + (hardware.motorBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH));
+
+        *//*hardware.motorFrontLeft.setTargetPosition(newLeftTarget);
+        hardware.motorFrontRight.setTargetPosition(newRightTarget);*//*
+
+        hardware.motorFrontLeft.setTargetPosition(newTarget);
+        hardware.motorBackLeft.setTargetPosition(newTarget);
+
+        hardware.motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        hardware.motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         runtime.reset();
-        leftDrive(Math.abs(speed));
-        rightDrive(Math.abs(speed));
+        *//*leftDrive(Math.abs(speed));
+        rightDrive(Math.abs(speed));*//*
 
+        *//*while (opModeIsActive() &&
+                (runtime.seconds() < TimeoutS) &&
+                (motorFrontLeft.isBusy() && motorFrontRight.isBusy())) {
 
+            // Display it for the driver.
+            telemetry.addData("Path1",  "Running to %7d :%7d", newTarget*//**//*newLeftTarget,  newRightTarget*//**//*);
+            telemetry.addData("Path2",  "Running at %7d :%7d",
+                    motorFrontLeft.getCurrentPosition(),
+                    motorBackLeft.getCurrentPosition());
+            telemetry.update();
+        }*/
 
         stop();
     }
@@ -102,16 +179,35 @@ public class Drivetrain implements Constants {
             hardware.motorFrontRight.setPower(power);
             hardware.motorBackRight.setPower(power);
 
-            stopState = (System.nanoTime() - startTime) / 100000;
+            stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
         }
 
         stop();
 
     }
 
+    public void rotate(double speed)
+    {
+        leftDrive(-speed);
+        rightDrive(speed);
+    }
 
 
 
+    public boolean opModeIsActive()
+    {
+        return auto.getOpModeIsActive();
+    }
+
+    public double distanceToCounts(double distance)
+    {
+        return (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION*NEVEREST_40_COUNTS_PER_REV;
+    }
+
+    public double countsToDistance(double counts)
+    {
+        return (counts*WHEEL_CIRCUM)/NEVEREST_40_COUNTS_PER_REV;
+    }
 
 
 

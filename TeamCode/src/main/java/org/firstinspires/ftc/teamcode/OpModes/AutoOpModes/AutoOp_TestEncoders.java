@@ -4,13 +4,19 @@ package org.firstinspires.ftc.teamcode.OpModes.AutoOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Const;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
+
+//v2 auto code made by Tarun Dasari, Rookie Programmer of 3846 Maelstrom
+//last update: November 21, 2018
 
 @Autonomous(name = "AutoOp_Encoders")
 public class AutoOp_TestEncoders extends LinearOpMode implements Constants
@@ -18,16 +24,30 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
     private Hardware robot = new Hardware();
     private ElapsedTime runtime = new ElapsedTime();
-    private Drivetrain drivetrain = new Drivetrain(hardwareMap);
+    //private Drivetrain drivetrain = new Drivetrain(Hardware hardwareMap);
+
+    public boolean getOpModeIsActive()
+    {
+        return opModeIsActive();
+    }
+
+    public Telemetry getTelemetry()
+    {
+        return telemetry;
+    }
+
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        //robot.setAuto(this, telemetry);
+
         robot.init(hardwareMap);
 
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        drivetrain.eReset();
+        robot.drivetrain.eReset();
 
         /*robot.motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -39,32 +59,29 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         robot.motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
 
-        //send data showing encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d",
-                            robot.motorFrontLeft.getCurrentPosition(),
-                            robot.motorBackLeft.getCurrentPosition(),
-                            robot.motorFrontRight.getCurrentPosition(),
-                            robot.motorBackRight.getCurrentPosition());
-        telemetry.update();
+
+
 
         robot.hookServo.setPosition(HOOK_UP_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);
 
         waitForStart();
 
-        robot.motorActuator.setPower(1);
+        /*robot.motorActuator.setPower(1);
         sleep(1260);
-        drivetrain.rotateForTime(TURN_SPEED, 1000);
+        robot.drivetrain.rotateForTime(TURN_SPEED, 1000);
         robot.hookServo.setPosition(HOOK_DOWN_POSITION);
         robot.motorActuator.setPower(-1);
-        sleep(1500);
+        sleep(1500);*/
 
-        drivetrain.rotateForTime(- TURN_SPEED, 1000);
-        drivetrain.driveDistance(DRIVE_SPEED, 24, 24,5.0);
+        robot.drivetrain.rotateForTime(- TURN_SPEED, 1000);
+        robot.drivetrain.driveDistance(36);
+        /*robot.drivetrain.driveDistance(36,4.0);*/
         robot.markerServo.setPosition(MARKER_DOWN_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);
-        drivetrain.rotateForTime(TURN_SPEED, 750);
-        drivetrain.driveDistance(DRIVE_SPEED, 48, 48,5.0);
+        robot.drivetrain.rotateForTime(TURN_SPEED, 750);
+        robot.drivetrain.driveDistance(12);
+        /*robot.drivetrain.driveDistance(12,4.0);*/
 
         /*EncoderDrive(DRIVE_SPEED, 24, 24, 5.0);
         EncoderDrive(TURN_SPEED, -24, 24, 2.0);
@@ -74,7 +91,7 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
     }
 
-    public void EncoderDrive(double speed, double leftInches,
+    /*public void EncoderDrive(double speed, double leftInches,
                              double rightInches, double timeoutS)
     {
         int newLeftTarget;
@@ -143,7 +160,7 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
 
 
-    } //encoder drive method ends
+    } //encoder drive method ends*/
 
 
 } //main
