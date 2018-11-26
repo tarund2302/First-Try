@@ -112,17 +112,17 @@ public class Drivetrain implements Constants {
 
         while(opModeIsActive() && (stopState <= 1000))
         {
-            double avg = ((hardware.motorFrontLeft.getCurrentPosition())+(hardware.motorBackLeft.getCurrentPosition()))/2;
-            double power = controlDrive.power(counts,avg);
+            double /*avg*/ pos = (hardware.motorFrontLeft.getCurrentPosition())/*+(hardware.motorBackLeft.getCurrentPosition()))/2*/;
+            double power = controlDrive.power(counts, pos/*avg*/);
             telemetry.addData("Power", power);
-            telemetry.addData("Distance", countsToDistance(avg));
+            telemetry.addData("Distance", countsToDistance(/*avg*/ pos));
 
             leftDrive(power);
             rightDrive(power);
 
-            if(Math.abs(counts-avg)<= distanceToCounts(DISTANCE_TOLERANCE))
+            if(Math.abs(counts-/*avg*/ pos)<= distanceToCounts(DISTANCE_TOLERANCE))
             {
-                telemetry.addData("Error:", Math.abs(counts-avg));
+                telemetry.addData("Error:", Math.abs(counts-/*avg*/ pos));
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
 
@@ -201,12 +201,12 @@ public class Drivetrain implements Constants {
 
     public double distanceToCounts(double distance)
     {
-        return (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION*NEVEREST_40_COUNTS_PER_REV;
+        return (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION *NEVEREST_40_COUNTS_PER_REV;
     }
 
     public double countsToDistance(double counts)
     {
-        return (counts*WHEEL_CIRCUM)/NEVEREST_40_COUNTS_PER_REV;
+        return (counts*WHEEL_CIRCUM *DRIVEN_GEAR_REDUCTION)/NEVEREST_40_COUNTS_PER_REV;
     }
 
 

@@ -77,9 +77,13 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         robot.drivetrain.rotateForTime(- TURN_SPEED, 1000);
         robot.drivetrain.driveDistance(36);
         /*robot.drivetrain.driveDistance(36,4.0);*/
+        robot.drivetrain.stop();
+        sleep(1000);
         robot.markerServo.setPosition(MARKER_DOWN_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);
         robot.drivetrain.rotateForTime(TURN_SPEED, 750);
+        robot.drivetrain.stop();
+        sleep(1000);
         robot.drivetrain.driveDistance(12);
         /*robot.drivetrain.driveDistance(12,4.0);*/
 
