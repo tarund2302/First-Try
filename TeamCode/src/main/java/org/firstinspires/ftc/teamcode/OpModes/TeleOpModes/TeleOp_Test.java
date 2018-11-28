@@ -19,6 +19,10 @@ public class TeleOp_Test extends OpMode implements Constants {
 
     //private Drivetrain drivetrain = new Drivetrain(Hardware hardwareMap);
 
+    boolean dPadRightCurrState = false;
+    boolean dPadRightPreviousState = false;
+    boolean invertDrive = true;
+
 
     @Override
     public void init() {
@@ -93,8 +97,26 @@ public class TeleOp_Test extends OpMode implements Constants {
             robot.markerServo.setPosition(MARKER_UP_POSITION);
         }
 
+
+        //toggling for inverted controls
+        if(gamepad1.dpad_right)
+        {
+            dPadRightCurrState = true;
+        }
+
+        else
+        {
+            dPadRightCurrState = false;
+            if (dPadRightPreviousState)
+            {
+                invertDrive = !invertDrive;
+            }
+        }
+
+        dPadRightPreviousState = dPadRightCurrState;
+
         //invert drivetrain controls
-        if(gamepad1.y)
+        if(invertDrive) //invert the drivetrain
         {
             robot.drivetrain.leftDrive(-gamepad1.left_stick_y);
             robot.drivetrain.rightDrive(-gamepad1.left_stick_y);
