@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
+import org.firstinspires.ftc.teamcode.Sensors.BNO055_IMU;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
 public class Hardware implements Constants {
@@ -16,8 +17,9 @@ public class Hardware implements Constants {
 
     public Telemetry telemetry;
 
-    public Servo hookServo;
+    public BNO055_IMU imu;
 
+    public Servo hookServo;
     public Servo markerServo;
 
     //drivetrain
@@ -36,6 +38,8 @@ public class Hardware implements Constants {
     public void init (HardwareMap hardwareMap)
     {
         this.hardwareMap = hardwareMap;
+
+        imu = new BNO055_IMU("imu", this);
 
         //initialize drivetrain
         motorFrontLeft = hardwareMap.dcMotor.get("FrontLeft");
@@ -68,6 +72,9 @@ public class Hardware implements Constants {
 
     }
 
-
+    public HardwareMap getHardwareMap()
+    {
+        return hardwareMap;
+    }
 
 }
