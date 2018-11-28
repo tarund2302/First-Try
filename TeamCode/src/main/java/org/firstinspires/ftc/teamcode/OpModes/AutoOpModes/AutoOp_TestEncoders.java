@@ -23,7 +23,7 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 {
 
     private Hardware robot = new Hardware();
-    private ElapsedTime runtime = new ElapsedTime();
+    /*private ElapsedTime runtime = new ElapsedTime();*/
     //private Drivetrain drivetrain = new Drivetrain(Hardware hardwareMap);
 
     public boolean getOpModeIsActive()
@@ -67,32 +67,74 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
         waitForStart();
 
-        /*robot.motorActuator.setPower(1);
+        //unlatch
+        robot.motorActuator.setPower(1);
         sleep(1260);
         robot.drivetrain.rotateForTime(TURN_SPEED, 1000);
         robot.hookServo.setPosition(HOOK_DOWN_POSITION);
         robot.motorActuator.setPower(-1);
-        sleep(1500);*/
-
+        sleep(1500);
         robot.drivetrain.rotateForTime(- TURN_SPEED, 1000);
-        robot.drivetrain.driveDistance(36);
+
+        //drive towards crater
         /*robot.drivetrain.driveDistance(36,4.0);*/
-        robot.drivetrain.stop();
+        robot.drivetrain.driveDistance(36);
+
+        //extend marker lift and drop marker
+        robot.motorExtendo1.setPower(1);
+        robot.motorExtendo2.setPower(1);
         sleep(1000);
+
+        robot.motorExtendo1.setPower(0);
+        robot.motorExtendo2.setPower(0);
         robot.markerServo.setPosition(MARKER_DOWN_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);
-        robot.drivetrain.rotateForTime(TURN_SPEED, 750);
-        robot.drivetrain.stop();
+
+        //retract marker lift
+        robot.motorExtendo1.setPower(-1);
+        robot.motorExtendo2.setPower(-1);
         sleep(1000);
-        robot.drivetrain.driveDistance(12);
+        robot.motorExtendo1.setPower(0);
+        robot.motorExtendo2.setPower(0);
+
+        //rotate towards crater from front of bot
+        /*robot.drivetrain.rotateForTime(TURN_SPEED, 750);*/
+        robot.drivetrain.rotateAngle(30);
+        robot.drivetrain.rotateAngle(90);
+        robot.drivetrain.rotateAngle(90);
+        /*robot.drivetrain.rotateBigAngle(180);*/
+
+        //drive towards crater
+        robot.drivetrain.driveDistance(60);
         /*robot.drivetrain.driveDistance(12,4.0);*/
+
+        //extend to pass over crater rim
+        robot.motorExtendo1.setPower(1);
+        robot.motorExtendo2.setPower(1);
+        sleep(1000);
+        robot.motorExtendo1.setPower(0);
+        robot.motorExtendo2.setPower(0);
 
         /*EncoderDrive(DRIVE_SPEED, 24, 24, 5.0);
         EncoderDrive(TURN_SPEED, -24, 24, 2.0);
         EncoderDrive(DRIVE_SPEED, 48, 48, 5.0);*/
 
+        /*
+        //testing for gyro
+        robot.drivetrain.rotateAngle(90);
+        robot.drivetrain.rotateAngle(-90);
+        robot.drivetrain.stop();
+        sleep(5000);
+        robot.drivetrain.rotateBigAngle(180);
+        robot.drivetrain.rotateBigAngle(-180);
+        robot.drivetrain.stop();
 
-
+        //testing for encoders
+        robot.drivetrain.driveDistance(12);
+        robot.drivetrain.driveDistance(-12);
+        robot.drivetrain.driveDistance(40);
+        robot.drivetrain.driveDistance(-40);
+        */
     }
 
     /*public void EncoderDrive(double speed, double leftInches,
