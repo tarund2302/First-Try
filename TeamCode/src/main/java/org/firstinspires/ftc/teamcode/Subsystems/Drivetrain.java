@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Control.PIDController;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 
-//will be implemented later
+
 public class Drivetrain implements Constants {
 
     private DcMotor motorFrontLeft;
@@ -36,7 +36,7 @@ public class Drivetrain implements Constants {
         motorFrontRight = hardware.motorFrontRight;
         motorBackLeft = hardware.motorBackLeft;
         motorBackRight = hardware.motorBackRight;
-        //auto = hardware.auto;
+        auto = hardware.auto;
         //hardware.init(hardwareMap);//
         //telemetry = hardware.telemetry;
 
@@ -97,6 +97,12 @@ public class Drivetrain implements Constants {
         telemetry.update();
     }
 
+    public void driveForward(double speed)
+    {
+        leftDrive(speed);
+        rightDrive(speed);
+    }
+
     public void driveDistance(/*double speed, double leftDistance,
                               double rightDistance, */ double distance/*, double TimeoutS*/)
     {
@@ -112,17 +118,17 @@ public class Drivetrain implements Constants {
 
         while(opModeIsActive() && (stopState <= 1000))
         {
-            double /*avg*/ pos = (hardware.motorFrontLeft.getCurrentPosition())/*+(hardware.motorBackLeft.getCurrentPosition()))/2*/;
-            double power = controlDrive.power(counts, pos/*avg*/);
+            double /*avg*/ ePos = (hardware.motorFrontLeft.getCurrentPosition())/*+(hardware.motorBackLeft.getCurrentPosition()))/2*/;
+            double power = controlDrive.power(counts, ePos/*avg*/);
             telemetry.addData("Power", power);
-            telemetry.addData("Distance", countsToDistance(/*avg*/ pos));
+            telemetry.addData("Distance", countsToDistance(/*avg*/ ePos));
 
             leftDrive(power);
             rightDrive(power);
 
-            if(Math.abs(counts-/*avg*/ pos)<= distanceToCounts(DISTANCE_TOLERANCE))
+            if(Math.abs(counts-/*avg*/ ePos)<= distanceToCounts(DISTANCE_TOLERANCE))
             {
-                telemetry.addData("Error:", Math.abs(counts-/*avg*/ pos));
+                telemetry.addData("Error:", Math.abs(counts-/*avg*/ ePos));
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
 
@@ -191,6 +197,87 @@ public class Drivetrain implements Constants {
         leftDrive(-speed);
         rightDrive(speed);
     }
+
+    public void rotateAngle(double angle)
+    {
+
+        eReset();
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        double degrees = angle;
+        PIDController rotateAngle =new PIDController(rotateKP,rotateKI,rotateKD,rotateMaxI);
+
+        while(opModeIsActive() && (stopState <= 1000))
+        {
+            double gPos = hardware.imu.getRelativeYaw();
+            double power = rotateAngle.power(degrees,gPos);
+
+            leftDrive(-power);
+            rightDrive(power);
+
+            telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+            telemetry.addLine("");
+            telemetry.addData("KP*error: ", rotateAngle.returnVal()[0]);
+            telemetry.addData("KI*i: ", rotateAngle.returnVal()[1]);
+            telemetry.addData("KD*d: ", rotateAngle.returnVal()[2]);
+            telemetry.update();
+
+            if (Math.abs(gPos - degrees) <= IMU_TOLERANCE)
+            {
+                stopState = (System.nanoTime() - startTime) / 1000000;
+            }
+            else
+            {
+                startTime = System.nanoTime();
+            }
+            if(System.nanoTime()/1000000-startTime/100000>3000)
+            {
+                break;
+            }
+
+
+        }
+        stop();
+    }
+
+    public void rotateBigAngle(double angle)
+    {
+        eReset();
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        double degrees = angle;
+        PIDController rotateAngle = new PIDController(rotateBigKP, rotateBigKI, rotateBigKD,rotateBigMaxI);
+
+        while((opModeIsActive() && (stopState <= 1000)))
+        {
+            double gPos = hardware.imu.getRelativeYaw();
+            double power = rotateAngle.power(degrees,gPos);
+
+            leftDrive(-power);
+            rightDrive(power);
+
+            telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+            telemetry.addLine("");
+            telemetry.addData("KP*error: ", rotateAngle.returnVal()[0]);
+            telemetry.addData("KI*i: ", rotateAngle.returnVal()[1]);
+            telemetry.addData("KD*d: ", rotateAngle.returnVal()[2]);
+            telemetry.update();
+
+            if (Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE)
+            {
+                stopState = (System.nanoTime() - startTime) / 1000000;
+            }
+            else
+            {
+                startTime = System.nanoTime();
+            }
+
+        }
+        stop();
+    }
+
 
 
 
