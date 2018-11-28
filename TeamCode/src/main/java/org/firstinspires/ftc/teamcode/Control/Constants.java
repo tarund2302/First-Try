@@ -50,5 +50,17 @@ public interface Constants {
     double dtKD = 0;
     double dtMaxI = 0;
 
+    double rotateKP = 0;
+    double rotateKI = 0;
+    double rotateKD = 0;
+    double rotateMaxI = 0;
+
+    double rotateBigKP = 0;
+    double rotateBigKI = 0;
+    double rotateBigKD = 0;
+    double rotateBigMaxI = 1;
+
+    double IMU_TOLERANCE = 0;
+
 
 }
