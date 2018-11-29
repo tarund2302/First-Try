@@ -26,6 +26,10 @@ public class Drivetrain implements Constants {
     private AutonomousOpMode auto;
     private Hardware hardware;
     private ElapsedTime runtime = new ElapsedTime();
+    PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
+    PIDController turnAngle =new PIDController(rotateKP,rotateKI,rotateKD,rotateMaxI);
+    PIDController smallTurnAngle = new PIDController(rotateBigKP, rotateBigKI, rotateBigKD,rotateBigMaxI);
+
 
     //private Hardware robot = new Hardware();//
 
@@ -110,7 +114,7 @@ public class Drivetrain implements Constants {
         //int newRightTarget;
         //int newTarget;
 
-        PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
+
         eReset();
         double counts = (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION*NEVEREST_40_COUNTS_PER_REV;
         long startTime = System.nanoTime();
@@ -173,7 +177,7 @@ public class Drivetrain implements Constants {
         stop();
     }
 
-    public void rotateForTime(double power, double time) //Ask Ankit & Ramsey about this
+    public void rotateForTime(double power, double time)
     {
         eReset();
         long startTime = System.nanoTime();
@@ -198,40 +202,53 @@ public class Drivetrain implements Constants {
         rightDrive(speed);
     }
 
-    public void rotateAngle(double angle)
+    public void turnAngle(double degrees)
     {
 
-        eReset();
         long startTime = System.nanoTime();
         long stopState = 0;
 
-        double degrees = angle;
-        PIDController rotateAngle =new PIDController(rotateKP,rotateKI,rotateKD,rotateMaxI);
 
         while(opModeIsActive() && (stopState <= 1000))
         {
             double gPos = hardware.imu.getRelativeYaw();
-            double power = rotateAngle.power(degrees,gPos);
+            double power = Math.abs(degrees) < 50 ? smallTurnAngle.power(degrees,gPos) : turnAngle.power(degrees,gPos);
 
-            leftDrive(-power);
-            rightDrive(power);
+            eReset();
+            leftDrive(power);
+            rightDrive(-power);
 
-            telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
-            telemetry.addLine("");
-            telemetry.addData("KP*error: ", rotateAngle.returnVal()[0]);
-            telemetry.addData("KI*i: ", rotateAngle.returnVal()[1]);
-            telemetry.addData("KD*d: ", rotateAngle.returnVal()[2]);
-            telemetry.update();
-
-            if (Math.abs(gPos - degrees) <= IMU_TOLERANCE)
+            if(degrees < 50)
             {
-                stopState = (System.nanoTime() - startTime) / 1000000;
+                telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                telemetry.addLine("");
+                telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
+                telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
+                telemetry.addData("KD*d: ", smallTurnAngle.returnVal()[2]);
+                telemetry.update();
             }
+
+            else
+            {
+                telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                telemetry.addLine("");
+                telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
+                telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
+                telemetry.addData("KD*d: ", turnAngle.returnVal()[2]);
+                telemetry.update();
+            }
+
+            if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE)
+            {
+                stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            }
+
             else
             {
                 startTime = System.nanoTime();
             }
-            if(System.nanoTime()/1000000-startTime/100000>3000)
+
+            if(System.nanoTime()/NANOSECS_PER_MILISEC-startTime/NANOSECS_PER_MILISEC>3000)
             {
                 break;
             }
@@ -241,14 +258,13 @@ public class Drivetrain implements Constants {
         stop();
     }
 
-    public void rotateBigAngle(double angle)
+    /*public void rotateBigAngle(double angle)
     {
         eReset();
         long startTime = System.nanoTime();
         long stopState = 0;
 
         double degrees = angle;
-        PIDController rotateAngle = new PIDController(rotateBigKP, rotateBigKI, rotateBigKD,rotateBigMaxI);
 
         while((opModeIsActive() && (stopState <= 1000)))
         {
@@ -276,9 +292,7 @@ public class Drivetrain implements Constants {
 
         }
         stop();
-    }
-
-
+    }*/
 
 
     public boolean opModeIsActive()
