@@ -1,3 +1,10 @@
+## First-Try
+Welcome to the First-Try Repository created by Tarun Dasari, Assistant Programmer of Team 3846 Maelstrom.
+
+This repository includes code for a test bot built for this year's season, Rover Ruckus.
+
+
+
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
