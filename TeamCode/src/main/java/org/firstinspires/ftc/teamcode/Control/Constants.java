@@ -32,10 +32,10 @@ public interface Constants {
 
 
     double WHEEL_DIAMETER_INCHES = 4.0;
+    double WHEEL_CIRCUM = WHEEL_DIAMETER_INCHES * Math.PI;
     double DRIVE_GEAR_REDUCTION = 0.5; //gear ratio (driven gear / driving gear)
     double DRIVEN_GEAR_REDUCTION = 2.0; //gear ratio (driving gear / driven gear)
-    double COUNTS_PER_INCH = (NEVEREST_40_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
-    double WHEEL_CIRCUM = WHEEL_DIAMETER_INCHES * Math.PI;
+    double COUNTS_PER_INCH = (NEVEREST_40_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUM;
     double DISTANCE_TOLERANCE = 1;
 
     //used for encoder drive
