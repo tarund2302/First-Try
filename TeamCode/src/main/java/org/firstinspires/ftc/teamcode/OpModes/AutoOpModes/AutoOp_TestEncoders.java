@@ -38,7 +38,7 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
         //robot.setAuto(this, telemetry);
 
