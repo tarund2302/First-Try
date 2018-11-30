@@ -35,6 +35,8 @@ public class Hardware implements Constants {
 
     public Drivetrain drivetrain;
 
+    public DcMotor[] drivetrainMotors = {motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight};
+
     public void init (HardwareMap hardwareMap)
     {
         this.hardwareMap = hardwareMap;

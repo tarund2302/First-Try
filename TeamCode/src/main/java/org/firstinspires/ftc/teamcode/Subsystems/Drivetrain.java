@@ -80,17 +80,11 @@ public class Drivetrain implements Constants {
     //reset encoders
     public void eReset()
     {
-        hardware.motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        hardware.motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        hardware.motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        hardware.motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hardware.motorBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        for(DcMotor motor: hardware.drivetrainMotors){
+            motor.setPower(0);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
 
         //send data showing encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
