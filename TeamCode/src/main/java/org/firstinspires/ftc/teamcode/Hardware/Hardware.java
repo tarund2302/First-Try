@@ -21,6 +21,7 @@ public class Hardware implements Constants {
 
     public Servo hookServo;
     public Servo markerServo;
+    public Servo latchServo;
 
     //drivetrain
     public DcMotor motorFrontLeft;
