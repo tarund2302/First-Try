@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Control.Constants;
+import org.firstinspires.ftc.teamcode.Control.Toggle;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
@@ -16,12 +17,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 public class TeleOp_Test extends OpMode implements Constants {
 
     private Hardware robot = new Hardware();
+    private Toggle toggle;
 
-    //private Drivetrain drivetrain = new Drivetrain(Hardware hardwareMap);
-
-    boolean dPadRightCurrState = false;
-    boolean dPadRightPreviousState = false;
-    boolean invertDrive = true;
 
 
     @Override
@@ -32,6 +29,7 @@ public class TeleOp_Test extends OpMode implements Constants {
         //initialize servo positions
         robot.hookServo.setPosition(HOOK_UP_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);
+
 
 
 
@@ -97,26 +95,8 @@ public class TeleOp_Test extends OpMode implements Constants {
             robot.markerServo.setPosition(MARKER_UP_POSITION);
         }
 
-
-        //toggling for inverted controls
-        if(gamepad1.dpad_right)
-        {
-            dPadRightCurrState = true;
-        }
-
-        else
-        {
-            dPadRightCurrState = false;
-            if (dPadRightPreviousState)
-            {
-                invertDrive = !invertDrive;
-            }
-        }
-
-        dPadRightPreviousState = dPadRightCurrState;
-
         //invert drivetrain controls
-        if(invertDrive) //invert the drivetrain
+        if(toggle.toggle(gamepad1.dpad_right)) //invert the drivetrain
         {
             robot.drivetrain.leftDrive(-gamepad1.left_stick_y);
             robot.drivetrain.rightDrive(-gamepad1.left_stick_y);
@@ -133,6 +113,7 @@ public class TeleOp_Test extends OpMode implements Constants {
         telemetry.addData("Right Front Motor Speed: ", robot.motorFrontRight.getPower());
         telemetry.addData("Left Back Motor Speed: ", robot.motorBackLeft.getPower());
         telemetry.addData("Right Back Motor Speed: ", robot.motorBackRight.getPower());
+        telemetry.addData("Latch Servo", robot.latchServo.getPosition());
         telemetry.update();
 
     }
