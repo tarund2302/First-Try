@@ -38,11 +38,14 @@ public class BNO055_IMU implements Runnable{
     {
         if (lastAngle > 90 && getAngles()[0] < 0) {
             relativeYaw = 180 * Math.round(relativeYaw/180) + (180 + getAngles()[0] );
-        } else if (lastAngle < -90 && getAngles()[0]  > 0) {
+        }
+        else if (lastAngle < -90 && getAngles()[0]  > 0) {
             relativeYaw = 180 * Math.round(relativeYaw/180) - (180 - getAngles()[0] );
-        } else if (Math.abs(relativeYaw) <= 180) {
+        }
+        else if (Math.abs(relativeYaw) <= 180) {
             relativeYaw = getAngles()[0];
-        } else {
+        }
+        else {
             relativeYaw += getAngles()[0]  - lastAngle;
         }
         lastAngle = getAngles()[0];
@@ -67,6 +70,10 @@ public class BNO055_IMU implements Runnable{
         double yaw = Math.atan2( 2*(w*z + x*y), 1 - (2*(y*y + z*z)) ) * 180.0 / Math.PI;
 
         return new double[]{yaw,pitch,roll};
+    }
+
+    public double getYaw() {
+        return getAngles()[0];
     }
 
     public void run()

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Control.PIDController;
+import org.firstinspires.ftc.teamcode.Control.Toggle;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 
@@ -22,10 +24,13 @@ public class Drivetrain implements Constants {
     private DcMotor motorBackRight;
     public Drivetrain drivetrain;
 
+
     private Telemetry telemetry;
     private AutonomousOpMode auto;
     private Hardware hardware;
+    private Toggle toggle;
     private ElapsedTime runtime = new ElapsedTime();
+    /*private Gamepad gamepad;*/
     PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
     PIDController turnAngle =new PIDController(rotateKP,rotateKI,rotateKD,rotateMaxI);
     PIDController smallTurnAngle = new PIDController(rotateBigKP, rotateBigKI, rotateBigKD,rotateBigMaxI);
@@ -51,10 +56,6 @@ public class Drivetrain implements Constants {
     }
 
 
-
-
-
-
     //left drive contorls
     public void leftDrive(double power)
     {
@@ -69,6 +70,10 @@ public class Drivetrain implements Constants {
         hardware.motorFrontRight.setPower(power);
         hardware.motorBackRight.setPower(power);
     }
+
+    /*public void invertDrive(double power, boolean button){
+        toggle.toggle(boolean );
+    }*/
 
     //stop drivetrain
     public void stop()
@@ -138,35 +143,6 @@ public class Drivetrain implements Constants {
         }
 
 
-        /*newLeftTarget = hardware.motorFrontLeft.getCurrentPosition() + (int) (leftDistance * COUNTS_PER_INCH);
-        newRightTarget = hardware.motorFrontRight.getCurrentPosition() + (int) (rightDistance * COUNTS_PER_INCH);*//*
-        newTarget = (hardware.motorFrontLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH))
-                + (hardware.motorBackLeft.getCurrentPosition() + (int) (distance * COUNTS_PER_INCH));
-
-        *//*hardware.motorFrontLeft.setTargetPosition(newLeftTarget);
-        hardware.motorFrontRight.setTargetPosition(newRightTarget);*//*
-
-        hardware.motorFrontLeft.setTargetPosition(newTarget);
-        hardware.motorBackLeft.setTargetPosition(newTarget);
-
-        hardware.motorFrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        hardware.motorBackLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        runtime.reset();
-        *//*leftDrive(Math.abs(speed));
-        rightDrive(Math.abs(speed));*//*
-
-        *//*while (opModeIsActive() &&
-                (runtime.seconds() < TimeoutS) &&
-                (motorFrontLeft.isBusy() && motorFrontRight.isBusy())) {
-
-            // Display it for the driver.
-            telemetry.addData("Path1",  "Running to %7d :%7d", newTarget*//**//*newLeftTarget,  newRightTarget*//**//*);
-            telemetry.addData("Path2",  "Running at %7d :%7d",
-                    motorFrontLeft.getCurrentPosition(),
-                    motorBackLeft.getCurrentPosition());
-            telemetry.update();
-        }*/
 
         stop();
     }
@@ -250,6 +226,11 @@ public class Drivetrain implements Constants {
 
         }
         stop();
+    }
+
+    public void turnRelativeAngle(double degrees){
+        /*rotateToAbsoluteAngle(hardware.imu.getYaw()+degrees);*/
+        turnAngle(hardware.imu.getYaw()+degrees);
     }
 
     /*public void rotateBigAngle(double angle)
