@@ -32,11 +32,8 @@ public class Drivetrain implements Constants {
     private ElapsedTime runtime = new ElapsedTime();
     /*private Gamepad gamepad;*/
     PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
-    PIDController turnAngle =new PIDController(rotateKP,rotateKI,rotateKD,rotateMaxI);
-    PIDController smallTurnAngle = new PIDController(rotateBigKP, rotateBigKI, rotateBigKD,rotateBigMaxI);
-
-
-    //private Hardware robot = new Hardware();//
+    PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
+    PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
 
     public Drivetrain(Hardware hardwareMap)
     {
@@ -106,32 +103,27 @@ public class Drivetrain implements Constants {
         rightDrive(speed);
     }
 
-    public void driveDistance(/*double speed, double leftDistance,
-                              double rightDistance, */ double distance/*, double TimeoutS*/)
+    public void driveDistance(double distance)
     {
-        //int newLeftTarget;
-        //int newRightTarget;
-        //int newTarget;
-
 
         eReset();
-        double counts = (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION*NEVEREST_40_COUNTS_PER_REV;
+        double counts = distanceToCounts(distance);
         long startTime = System.nanoTime();
         long stopState = 0;
 
         while(opModeIsActive() && (stopState <= 1000))
         {
-            double /*avg*/ ePos = (hardware.motorFrontLeft.getCurrentPosition())/*+(hardware.motorBackLeft.getCurrentPosition()))/2*/;
-            double power = controlDrive.power(counts, ePos/*avg*/);
+            double /*avg*/ ePos = (hardware.motorFrontLeft.getCurrentPosition());
+            double power = controlDrive.power(counts, ePos);
             telemetry.addData("Power", power);
-            telemetry.addData("Distance", countsToDistance(/*avg*/ ePos));
+            telemetry.addData("Distance", countsToDistance(ePos));
 
             leftDrive(power);
             rightDrive(power);
 
             if(Math.abs(counts-/*avg*/ ePos)<= distanceToCounts(DISTANCE_TOLERANCE))
             {
-                telemetry.addData("Error:", Math.abs(counts-/*avg*/ ePos));
+                telemetry.addData("Error:", Math.abs(counts-ePos));
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
 
@@ -229,7 +221,6 @@ public class Drivetrain implements Constants {
     }
 
     public void turnRelativeAngle(double degrees){
-        /*rotateToAbsoluteAngle(hardware.imu.getYaw()+degrees);*/
         turnAngle(hardware.imu.getYaw()+degrees);
     }
 

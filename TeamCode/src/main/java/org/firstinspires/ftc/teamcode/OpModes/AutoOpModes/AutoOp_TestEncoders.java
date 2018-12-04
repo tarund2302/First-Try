@@ -62,19 +62,25 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
 
 
-        robot.hookServo.setPosition(HOOK_UP_POSITION);
-        robot.markerServo.setPosition(MARKER_UP_POSITION);
+        /*robot.hookServo.setPosition(HOOK_UP_POSITION);
+        robot.markerServo.setPosition(MARKER_UP_POSITION);*/
+        robot.latchServo.setPosition(DROP_UP_POSITION);
 
         waitForStart();
 
         //unlatch
-        robot.motorActuator.setPower(1);
+        /*robot.motorActuator.setPower(1);
         sleep(1260);
         robot.motorActuator.setPower(0);
-        robot.hookServo.setPosition(HOOK_DOWN_POSITION);
+        *//*robot.hookServo.setPosition(HOOK_DOWN_POSITION);*//*
         robot.motorActuator.setPower(-1);
         sleep(1500);
-        robot.motorActuator.setPower(0);
+        robot.motorActuator.setPower(0);*/
+
+        //drop
+        robot.latchServo.setPosition(DROP_DOWN_POSITION);
+        robot.drivetrain.stop();
+        sleep(500);
 
         //drive towards crater
         robot.drivetrain.driveDistance(36);
@@ -85,9 +91,9 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         sleep(1000);
         robot.motorExtendo1.setPower(0);
         robot.motorExtendo2.setPower(0);
-        robot.markerServo.setPosition(MARKER_DOWN_POSITION);
+        /*robot.markerServo.setPosition(MARKER_DOWN_POSITION);*/
         sleep(500);
-        robot.markerServo.setPosition(MARKER_UP_POSITION);
+        /*robot.markerServo.setPosition(MARKER_UP_POSITION);*/
 
         //retract marker lift
         robot.motorExtendo1.setPower(EXTENDO_RETRACT_POWER);
@@ -110,9 +116,10 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         robot.motorExtendo1.setPower(0);
         robot.motorExtendo2.setPower(0);
 
-        /*EncoderDrive(DRIVE_SPEED, 24, 24, 5.0);
-        EncoderDrive(TURN_SPEED, -24, 24, 2.0);
-        EncoderDrive(DRIVE_SPEED, 48, 48, 5.0);*/
+        while(opModeIsActive()){
+            telemetry.addData("drop position", robot.latchServo.getPosition());
+            telemetry.update();
+        }
 
         /*
         //testing for gyro

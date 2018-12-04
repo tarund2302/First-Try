@@ -19,8 +19,8 @@ public class Hardware implements Constants {
 
     public BNO055_IMU imu;
 
-    public Servo hookServo;
-    public Servo markerServo;
+    /*public Servo hookServo;
+    public Servo markerServo;*/
     public Servo latchServo;
 
     //drivetrain
@@ -61,10 +61,13 @@ public class Hardware implements Constants {
         motorActuator = hardwareMap.dcMotor.get("Actuator");
 
         //initialize servos (hook & marker)
-        hookServo = hardwareMap.servo.get("hook");
-        markerServo = hardwareMap.servo.get("marker");
+        /*hookServo = hardwareMap.servo.get("hook");
+        markerServo = hardwareMap.servo.get("marker");*/
+        latchServo = hardwareMap.servo.get("drop");
 
         drivetrain = new Drivetrain(Hardware.this);
+
+
 
     }
 

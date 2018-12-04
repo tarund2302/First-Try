@@ -18,8 +18,10 @@ public class TeleOp_Test extends OpMode implements Constants {
 
     private Hardware robot = new Hardware();
     private Toggle toggle;
-
-
+    private double yDirection;
+    private double xDirection;
+    private double x;
+    private double y;
 
     @Override
     public void init() {
@@ -27,20 +29,23 @@ public class TeleOp_Test extends OpMode implements Constants {
         robot.init(hardwareMap);
 
         //initialize servo positions
-        robot.hookServo.setPosition(HOOK_UP_POSITION);
-        robot.markerServo.setPosition(MARKER_UP_POSITION);
-
-
-
+        /*robot.hookServo.setPosition(HOOK_UP_POSITION);
+        robot.markerServo.setPosition(MARKER_UP_POSITION);*/
 
     }
 
     @Override
     public void loop() {
 
-        //controls for drivetrain
-        robot.drivetrain.leftDrive(gamepad1.left_stick_y);
-        robot.drivetrain.rightDrive(gamepad1.right_stick_y);
+        yDirection = gamepad1.left_stick_y;
+        xDirection = gamepad1.right_stick_x;
+
+        double y = yDirection - xDirection;
+        double x = yDirection + xDirection;
+
+        // NFS controls for drivetrain
+        robot.drivetrain.leftDrive(y);
+        robot.drivetrain.rightDrive(x);
 
         //controls for extendo
 
@@ -84,28 +89,47 @@ public class TeleOp_Test extends OpMode implements Constants {
         }
 
 
-        //hook controls
-        if(gamepad1.a) //hook down
+        //toggle latch controls
+        if(toggle.toggle(gamepad1.a)) //latch down
         {
-            robot.markerServo.setPosition(MARKER_DOWN_POSITION);
+            robot.latchServo.setPosition(DROP_UP_POSITION);
         }
 
-        if(gamepad1.x) //hook up
-        {
-            robot.markerServo.setPosition(MARKER_UP_POSITION);
+        else //latch up
+            {
+            robot.latchServo.setPosition(DROP_DOWN_POSITION);
         }
+
 
         //invert drivetrain controls
         if(toggle.toggle(gamepad1.dpad_right)) //invert the drivetrain
         {
-            robot.drivetrain.leftDrive(-gamepad1.left_stick_y);
-            robot.drivetrain.rightDrive(-gamepad1.left_stick_y);
+            /*robot.drivetrain.leftDrive(-gamepad1.left_stick_y);
+            robot.drivetrain.rightDrive(-gamepad1.left_stick_y);*/
+
+            robot.drivetrain.leftDrive(-y);
+            robot.drivetrain.rightDrive(-x);
         }
 
         else //leave controls as normal
         {
+            /*robot.drivetrain.leftDrive(gamepad1.left_stick_y);
+            robot.drivetrain.rightDrive(gamepad1.left_stick_y);*/
+
+            robot.drivetrain.leftDrive(y);
+            robot.drivetrain.rightDrive(x);
+        }
+
+        if(toggle.toggle(gamepad1.dpad_up))
+        {
             robot.drivetrain.leftDrive(gamepad1.left_stick_y);
-            robot.drivetrain.rightDrive(gamepad1.left_stick_y);
+            robot.drivetrain.rightDrive(gamepad1.right_stick_y);
+        }
+
+        else
+        {
+            robot.drivetrain.leftDrive(y);
+            robot.drivetrain.rightDrive(x);
         }
 
         // Show the speed of drivetrain motors
