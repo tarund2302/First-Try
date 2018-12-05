@@ -30,7 +30,7 @@ public class Drivetrain implements Constants {
     private Hardware hardware;
     private Toggle toggle;
     private ElapsedTime runtime = new ElapsedTime();
-    /*private Gamepad gamepad;*/
+
     PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
     PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
     PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
@@ -43,8 +43,6 @@ public class Drivetrain implements Constants {
         motorBackLeft = hardware.motorBackLeft;
         motorBackRight = hardware.motorBackRight;
         auto = hardware.auto;
-        //hardware.init(hardwareMap);//
-        //telemetry = hardware.telemetry;
 
         //reverse left side of drivetrain
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -68,9 +66,13 @@ public class Drivetrain implements Constants {
         hardware.motorBackRight.setPower(power);
     }
 
-    /*public void invertDrive(double power, boolean button){
-        toggle.toggle(boolean );
-    }*/
+    public void drive(double leftPower, double rightPower)
+    {
+        hardware.motorFrontLeft.setPower(leftPower);
+        hardware.motorBackLeft.setPower(leftPower);
+        hardware.motorFrontRight.setPower(rightPower);
+        hardware.motorBackRight.setPower(rightPower);
+    }
 
     //stop drivetrain
     public void stop()
@@ -113,7 +115,7 @@ public class Drivetrain implements Constants {
 
         while(opModeIsActive() && (stopState <= 1000))
         {
-            double /*avg*/ ePos = (hardware.motorFrontLeft.getCurrentPosition());
+            double ePos = (hardware.motorFrontLeft.getCurrentPosition());
             double power = controlDrive.power(counts, ePos);
             telemetry.addData("Power", power);
             telemetry.addData("Distance", countsToDistance(ePos));
@@ -121,7 +123,7 @@ public class Drivetrain implements Constants {
             leftDrive(power);
             rightDrive(power);
 
-            if(Math.abs(counts-/*avg*/ ePos)<= distanceToCounts(DISTANCE_TOLERANCE))
+            if(Math.abs(counts- ePos)<= distanceToCounts(DISTANCE_TOLERANCE))
             {
                 telemetry.addData("Error:", Math.abs(counts-ePos));
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;

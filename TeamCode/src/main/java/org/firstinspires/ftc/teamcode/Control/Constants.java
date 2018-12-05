@@ -40,6 +40,7 @@ public interface Constants {
     double DRIVE_GEAR_REDUCTION = 0.5; //gear ratio (driven gear / driving gear)
     double DRIVEN_GEAR_REDUCTION = 2.0; //gear ratio (driving gear / driven gear)
     double COUNTS_PER_INCH = (NEVEREST_40_COUNTS_PER_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUM;
+
     double DISTANCE_TOLERANCE = .5;
     double IMU_TOLERANCE = 0.5;
 
@@ -50,17 +51,18 @@ public interface Constants {
     double NANOSECS_PER_MIN = 6e+10;
     long NANOSECS_PER_MILISEC = 1000000;
 
-    double dtKP = 0;
+    //PID will be tested
+    double dtKP = 0.1;
     double dtKI = 0;
     double dtKD = 0;
     double dtMaxI = 1;
 
-    double turnKP = 0;
+    double turnKP = 0.1;
     double turnKI = 0;
     double turnKD = 0;
     double turnMaxI = 1;
 
-    double turnBigKP = 0;
+    double turnBigKP = 0.1;
     double turnBigKI = 0;
     double turnBigKD = 0;
     double turnBigMaxI = 1;

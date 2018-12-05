@@ -20,8 +20,8 @@ public class TeleOp_Test extends OpMode implements Constants {
     private Toggle toggle;
     private double yDirection;
     private double xDirection;
-    private double x;
-    private double y;
+    /*private double x;
+    private double y;*/
 
     @Override
     public void init() {
@@ -36,7 +36,6 @@ public class TeleOp_Test extends OpMode implements Constants {
 
     @Override
     public void loop() {
-
         yDirection = gamepad1.left_stick_y;
         xDirection = gamepad1.right_stick_x;
 
@@ -120,13 +119,13 @@ public class TeleOp_Test extends OpMode implements Constants {
             robot.drivetrain.rightDrive(x);
         }
 
-        if(toggle.toggle(gamepad1.dpad_up))
+        if(toggle.toggle(gamepad1.dpad_up)) //switch to tank
         {
             robot.drivetrain.leftDrive(gamepad1.left_stick_y);
             robot.drivetrain.rightDrive(gamepad1.right_stick_y);
         }
 
-        else
+        else //do NFS controls
         {
             robot.drivetrain.leftDrive(y);
             robot.drivetrain.rightDrive(x);

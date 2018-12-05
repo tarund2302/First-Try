@@ -6,11 +6,11 @@ public class Toggle {
     boolean boolState = true;
     boolean currState = false;
     boolean prevState = false;
-    boolean task = true;
+    boolean taskState = true;
     private Gamepad gamepad;
 
 
-    public boolean toggle(boolean boolState /*, boolean task*/){
+    public boolean toggle(boolean boolState){
 
         if(boolState){
             currState = true;
@@ -19,13 +19,13 @@ public class Toggle {
         else{
             currState = false;
             if(prevState){
-                task = !task;
+                taskState = !taskState;
             }
         }
 
         prevState = currState;
 
-        return task;
+        return taskState;
     }
 
 
