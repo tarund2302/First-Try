@@ -22,7 +22,7 @@ public class Drivetrain implements Constants {
     private DcMotor motorFrontRight;
     private DcMotor motorBackLeft;
     private DcMotor motorBackRight;
-    public Drivetrain drivetrain;
+   /* public Drivetrain drivetrain;*/
 
 
     private Telemetry telemetry;
@@ -35,18 +35,20 @@ public class Drivetrain implements Constants {
     PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
     PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
 
-    public Drivetrain(Hardware hardwareMap)
+    public Drivetrain(Hardware hardware)
     {
-        this.hardware = hardwareMap;
+        this.hardware = hardware;
         motorFrontLeft = hardware.motorFrontLeft;
         motorFrontRight = hardware.motorFrontRight;
         motorBackLeft = hardware.motorBackLeft;
         motorBackRight = hardware.motorBackRight;
         auto = hardware.auto;
+        telemetry = hardware.telemetry;
 
         //reverse left side of drivetrain
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
+
 
     }
 
@@ -92,10 +94,10 @@ public class Drivetrain implements Constants {
 
         //send data showing encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
-                drivetrain.motorFrontLeft.getCurrentPosition(),
-                drivetrain.motorBackLeft.getCurrentPosition(),
-                drivetrain.motorFrontRight.getCurrentPosition(),
-                drivetrain.motorBackRight.getCurrentPosition());
+                motorFrontLeft.getCurrentPosition(),
+                motorBackLeft.getCurrentPosition(),
+                motorFrontRight.getCurrentPosition(),
+                motorBackRight.getCurrentPosition());
         telemetry.update();
     }
 
@@ -117,15 +119,16 @@ public class Drivetrain implements Constants {
         {
             double ePos = (hardware.motorFrontLeft.getCurrentPosition());
             double power = controlDrive.power(counts, ePos);
-            telemetry.addData("Power", power);
-            telemetry.addData("Distance", countsToDistance(ePos));
+            hardware.telemetry.addData("Power", power);
+            hardware.telemetry.addData("Distance", countsToDistance(ePos));
+            hardware.telemetry.addData("Error:", Math.abs(counts-ePos));
 
             leftDrive(power);
             rightDrive(power);
 
             if(Math.abs(counts- ePos)<= distanceToCounts(DISTANCE_TOLERANCE))
             {
-                telemetry.addData("Error:", Math.abs(counts-ePos));
+                hardware.telemetry.addData("Error:", Math.abs(counts-ePos));
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
 
@@ -135,8 +138,6 @@ public class Drivetrain implements Constants {
             telemetry.update();
 
         }
-
-
 
         stop();
     }
