@@ -29,6 +29,7 @@ public class PIDController implements Constants{
         d = (error - previousError)/deltaTime;
         previousTime = System.nanoTime();
         previousError = error;
+        power = (KP*error) + (KI*i) + (KD*d);
         return power;
     }
 
