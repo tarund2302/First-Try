@@ -105,6 +105,11 @@ public class Drivetrain implements Constants {
     {
         leftDrive(speed);
         rightDrive(speed);
+
+        while(opModeIsActive()){
+            hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
+        }
+
     }
 
     public void driveDistance(double distance)
@@ -165,6 +170,10 @@ public class Drivetrain implements Constants {
     {
         leftDrive(-speed);
         rightDrive(speed);
+
+        while(opModeIsActive()){
+            hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
+        }
     }
 
     public void turnAngle(double degrees)
@@ -185,22 +194,22 @@ public class Drivetrain implements Constants {
 
             if(degrees < 50)
             {
-                telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
-                telemetry.addLine("");
-                telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
-                telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
-                telemetry.addData("KD*d: ", smallTurnAngle.returnVal()[2]);
-                telemetry.update();
+                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                hardware.telemetry.addLine("");
+                hardware.telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
+                hardware.telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
+                hardware.telemetry.addData("KD*d: ", smallTurnAngle.returnVal()[2]);
+                hardware.telemetry.update();
             }
 
             else
             {
-                telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
-                telemetry.addLine("");
-                telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
-                telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
-                telemetry.addData("KD*d: ", turnAngle.returnVal()[2]);
-                telemetry.update();
+                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                hardware.telemetry.addLine("");
+                hardware.telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
+                hardware.telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
+                hardware.telemetry.addData("KD*d: ", turnAngle.returnVal()[2]);
+                hardware.telemetry.update();
             }
 
             if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE)
