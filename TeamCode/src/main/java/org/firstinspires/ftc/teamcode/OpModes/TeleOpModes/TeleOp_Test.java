@@ -11,17 +11,15 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
 //v3 teleop code made by Tarun Dasari, Rookie Programmer of 3846 Maelstrom
-//last update: November 21, 2018
+//last update: December 9, 2018
 
 @TeleOp(name ="TeleOp_Test")
 public class TeleOp_Test extends OpMode implements Constants {
 
     private Hardware robot = new Hardware();
-    private Toggle toggle;
+    private Toggle toggle = new Toggle();
     private double yDirection;
     private double xDirection;
-    /*private double x;
-    private double y;*/
 
     @Override
     public void init() {
@@ -36,17 +34,17 @@ public class TeleOp_Test extends OpMode implements Constants {
 
     @Override
     public void loop() {
-        yDirection = gamepad1.left_stick_y;
-        xDirection = gamepad1.right_stick_x;
+        yDirection = 0.5 * gamepad1.left_stick_y;
+        xDirection = 0.5 * gamepad1.right_stick_x;
 
         double y = yDirection - xDirection;
         double x = yDirection + xDirection;
 
         // NFS controls for drivetrain
-        robot.drivetrain.leftDrive(y);
-        robot.drivetrain.rightDrive(x);
+/*        robot.drivetrain.leftDrive(y);
+        robot.drivetrain.rightDrive(x);*/
 
-        //controls for extendo
+        /*//controls for extendo
 
         //extends
         if(gamepad1.right_trigger > 0)
@@ -87,9 +85,9 @@ public class TeleOp_Test extends OpMode implements Constants {
             robot.motorActuator.setPower(0); //stops motor
         }
 
-
+*/
         //toggle latch controls
-        if(toggle.toggle(gamepad1.a)) //latch down
+        if(toggle.toggle(gamepad1.x)) //latch down
         {
             robot.latchServo.setPosition(DROP_UP_POSITION);
         }
@@ -101,34 +99,36 @@ public class TeleOp_Test extends OpMode implements Constants {
 
 
         //invert drivetrain controls
-        if(toggle.toggle(gamepad1.dpad_right)) //invert the drivetrain
-        {
-            /*robot.drivetrain.leftDrive(-gamepad1.left_stick_y);
-            robot.drivetrain.rightDrive(-gamepad1.left_stick_y);*/
 
-            robot.drivetrain.leftDrive(-y);
-            robot.drivetrain.rightDrive(-x);
-        }
-
-        else //leave controls as normal
-        {
-            /*robot.drivetrain.leftDrive(gamepad1.left_stick_y);
-            robot.drivetrain.rightDrive(gamepad1.left_stick_y);*/
-
-            robot.drivetrain.leftDrive(y);
-            robot.drivetrain.rightDrive(x);
-        }
 
         if(toggle.toggle(gamepad1.dpad_up)) //switch to tank
         {
-            robot.drivetrain.leftDrive(gamepad1.left_stick_y);
-            robot.drivetrain.rightDrive(gamepad1.right_stick_y);
+
+            if(toggle.toggle(gamepad1.dpad_right)) //invert the drivetrain
+            {
+                robot.drivetrain.leftDrive(0.5 * -gamepad1.left_stick_y);
+                robot.drivetrain.rightDrive(0.5 * -gamepad1.right_stick_y);
+            }
+            else //leave controls as normal
+            {
+                robot.drivetrain.leftDrive(0.5 * gamepad1.left_stick_y);
+                robot.drivetrain.rightDrive(0.5 * gamepad1.right_stick_y);
+            }
+
         }
 
         else //do NFS controls
         {
-            robot.drivetrain.leftDrive(y);
-            robot.drivetrain.rightDrive(x);
+            if(toggle.toggle(gamepad1.dpad_right)) //invert the drivetrain
+            {
+                robot.drivetrain.leftDrive(-y);
+                robot.drivetrain.rightDrive(-x);
+            }
+            else //leave controls as normal
+            {
+                robot.drivetrain.leftDrive(y);
+                robot.drivetrain.rightDrive(x);
+            }
         }
 
         // Show the speed of drivetrain motors
