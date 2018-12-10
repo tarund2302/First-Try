@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
@@ -19,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 //last update: November 21, 2018
 
 @Autonomous(name = "AutoOp_Encoders")
-public class AutoOp_TestEncoders extends LinearOpMode implements Constants
+public class AutoOp_TestEncoders extends LinearOpMode implements Constants, AutonomousOpMode
 {
 
     private Hardware robot = new Hardware();
@@ -42,25 +43,14 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
         //robot.setAuto(this, telemetry);
 
+        robot.setAuto(this);
+        robot.setTelemetry(telemetry);
         robot.init(hardwareMap);
-
+/*
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        robot.drivetrain.eReset();
-
-        /*robot.motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
-
-
-
+        robot.drivetrain.eReset();*/
 
         /*robot.hookServo.setPosition(HOOK_UP_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);*/
@@ -68,14 +58,23 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
         waitForStart();
 
+        robot.drivetrain.eReset();
+/*
+
         //unlatch
-        /*robot.motorActuator.setPower(1);
+        */
+/*robot.motorActuator.setPower(1);
         sleep(1260);
         robot.motorActuator.setPower(0);
-        *//*robot.hookServo.setPosition(HOOK_DOWN_POSITION);*//*
+        *//*
+*/
+/*robot.hookServo.setPosition(HOOK_DOWN_POSITION);*//*
+*/
+/*
         robot.motorActuator.setPower(-1);
         sleep(1500);
-        robot.motorActuator.setPower(0);*/
+        robot.motorActuator.setPower(0);*//*
+
 
         //drop
         robot.latchServo.setPosition(DROP_DOWN_POSITION);
@@ -84,6 +83,8 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
 
         //drive towards crater
         robot.drivetrain.driveDistance(36);
+*/
+/*
 
         //extend marker lift and drop marker
         robot.motorExtendo1.setPower(EXTENDO_EXTEND_POWER);
@@ -91,9 +92,21 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         sleep(1000);
         robot.motorExtendo1.setPower(0);
         robot.motorExtendo2.setPower(0);
-        /*robot.markerServo.setPosition(MARKER_DOWN_POSITION);*/
+        *//*
+
+*/
+/*robot.markerServo.setPosition(MARKER_DOWN_POSITION);*//*
+*/
+/*
+
         sleep(500);
-        /*robot.markerServo.setPosition(MARKER_UP_POSITION);*/
+        *//*
+
+*/
+/*robot.markerServo.setPosition(MARKER_UP_POSITION);*//*
+*/
+/*
+
 
         //retract marker lift
         robot.motorExtendo1.setPower(EXTENDO_RETRACT_POWER);
@@ -101,6 +114,8 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         sleep(1000);
         robot.motorExtendo1.setPower(0);
         robot.motorExtendo2.setPower(0);
+*//*
+
 
         //rotate towards crater from front of bot
         robot.drivetrain.turnAngle(-150);
@@ -108,6 +123,8 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         //drive towards crater
         robot.drivetrain.driveDistance(60);
 
+*/
+/*
 
         //extend to pass over crater rim
         robot.motorExtendo1.setPower(1);
@@ -115,28 +132,35 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants
         sleep(1750);
         robot.motorExtendo1.setPower(0);
         robot.motorExtendo2.setPower(0);
+*/
 
-        while(opModeIsActive()){
+
+      /*  while(opModeIsActive()){
             telemetry.addData("drop position", robot.latchServo.getPosition());
             telemetry.update();
-        }
+        }*/
 
         //test
-        /*
-        //testing for gyro
+
+      /*  //testing for gyro
         robot.drivetrain.turnAngle(90);
         robot.drivetrain.turnAngle(-90);
         robot.drivetrain.stop();
         sleep(5000);
         robot.drivetrain.turnAngle(270);
         robot.drivetrain.turnAngle(-300);
-        robot.drivetrain.stop();
+        robot.drivetrain.stop();*/
+
+
 
         //testing for encoders
         robot.drivetrain.driveDistance(12);
+        robot.drivetrain.stop();
+        sleep(2000);
         robot.drivetrain.driveDistance(-12);
         robot.drivetrain.driveDistance(40);
-        robot.drivetrain.driveDistance(-40);*/
+        robot.drivetrain.driveDistance(-40);
+
 
     }
 

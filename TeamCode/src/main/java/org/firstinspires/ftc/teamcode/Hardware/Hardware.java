@@ -30,13 +30,14 @@ public class Hardware implements Constants {
     public DcMotor motorBackRight;
 
     //extendo & actuator
-    public DcMotor motorExtendo1;
+   /* public DcMotor motorExtendo1;
     public DcMotor motorExtendo2;
-    public DcMotor motorActuator;
+    public DcMotor motorActuator;*/
 
     public Drivetrain drivetrain;
 
-    public DcMotor[] drivetrainMotors = {motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight};
+    public DcMotor[] drivetrainMotors;
+
 
     public void init (HardwareMap hardwareMap)
     {
@@ -50,16 +51,19 @@ public class Hardware implements Constants {
         motorBackLeft = hardwareMap.dcMotor.get("BackLeft");
         motorBackRight = hardwareMap.dcMotor.get("BackRight");
 
+       DcMotor[] tempMotorArray = {motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight};
+       drivetrainMotors = tempMotorArray;
+
         //reverse left side of drivetrain
         motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
-        //initialize extendo & actuator
+      /*  //initialize extendo & actuator
         motorExtendo1 = hardwareMap.dcMotor.get("Extendo1");
         motorExtendo2 = hardwareMap.dcMotor.get("Extendo2");
         motorActuator = hardwareMap.dcMotor.get("Actuator");
-
+*/
         //initialize servos (hook & marker)
         /*hookServo = hardwareMap.servo.get("hook");
         markerServo = hardwareMap.servo.get("marker");*/
@@ -69,11 +73,21 @@ public class Hardware implements Constants {
 
 
 
+
+
     }
 
-    public void setAuto(AutonomousOpMode auto, Telemetry telemetry)
+
+
+
+    public void setAuto(AutonomousOpMode auto)
     {
         this.auto = auto;
+
+    }
+
+    public void setTelemetry (Telemetry telemetry) {
+
         this.telemetry = telemetry;
 
     }
