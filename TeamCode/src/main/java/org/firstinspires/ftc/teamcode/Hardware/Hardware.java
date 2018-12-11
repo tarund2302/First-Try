@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Sensors.BNO055_IMU;
+import org.firstinspires.ftc.teamcode.Sensors.MaxbotixUltrasonicSensor;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
 public class Hardware implements Constants {
@@ -18,6 +19,8 @@ public class Hardware implements Constants {
     public Telemetry telemetry;
 
     public BNO055_IMU imu;
+
+    public MaxbotixUltrasonicSensor rangeSensor;
 
     /*public Servo hookServo;
     public Servo markerServo;*/
@@ -71,7 +74,7 @@ public class Hardware implements Constants {
 
         drivetrain = new Drivetrain(Hardware.this);
 
-
+        rangeSensor = new MaxbotixUltrasonicSensor(hardwareMap.analogInput.get("rangeSensor"));
 
 
 
