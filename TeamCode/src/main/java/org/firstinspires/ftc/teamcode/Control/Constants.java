@@ -43,6 +43,7 @@ public interface Constants {
 
     double DISTANCE_TOLERANCE = .5;
     double IMU_TOLERANCE = 0.5;
+    double RANGE_DISTANCE_TOLERANCE = 0.1;
 
     //used for encoder drive
     double DRIVE_SPEED = 0.5;
@@ -57,20 +58,29 @@ public interface Constants {
     double dtKD = 0;
     double dtMaxI = 1;
 
+    //turn angle (< 50) PID
     double turnKP = 0.01;
     double turnKI = 0;
     double turnKD = 0;
     double turnMaxI = 1;
 
+    //turn big angle (> 50) PID
     double turnBigKP = 0.01;
     double turnBigKI = 0;
     double turnBigKD = 0;
     double turnBigMaxI = 1;
 
+    //opencv goldfind PID
     double alignGoldKP = 0.001;
     double alignGoldKI = 0;
     double alignGoldKD = 0;
-    double alignGoldMaxI = 0;
+    double alignGoldMaxI = 1;
+
+    //range sensor PID
+    double rangeKP = 0.001;
+    double rangeKI = 0;
+    double rangeKD = 0;
+    double rangeMaxI = 1;
 
     int ALIGN_POSITION = -100;
 
