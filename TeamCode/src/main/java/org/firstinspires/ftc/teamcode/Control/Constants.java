@@ -67,7 +67,12 @@ public interface Constants {
     double turnBigKD = 0;
     double turnBigMaxI = 1;
 
+    double alignGoldKP = 0.001;
+    double alignGoldKI = 0;
+    double alignGoldKD = 0;
+    double alignGoldMaxI = 0;
 
+    int ALIGN_POSITION = -100;
 
 
 }
