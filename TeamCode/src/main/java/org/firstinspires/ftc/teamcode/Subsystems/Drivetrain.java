@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Control.PIDController;
@@ -34,6 +35,7 @@ public class Drivetrain implements Constants {
     PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
     PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
     PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
+    PIDController rangeDistance = new PIDController(rangeKP, rangeKI, rangeKD, rangeMaxI);
 
     public Drivetrain(Hardware hardware)
     {
@@ -146,6 +148,35 @@ public class Drivetrain implements Constants {
 
         stop();
     }
+    public void driveTillRangeDistance(double distance){
+
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        while(opModeIsActive() && (stopState <= 1000)){
+            double currDistance = hardware.rangeSensor.getDistance(DistanceUnit.INCH);
+            double power = rangeDistance.power(distance, currDistance);
+            hardware.telemetry.addData("Power:",power);
+            hardware.telemetry.addData("Distance:",currDistance);
+            hardware.telemetry.addData("Error:",Math.abs(distance-currDistance));
+            hardware.telemetry.addData("StopState:",stopState);
+            hardware.telemetry.update();
+
+            leftDrive(-power);
+            rightDrive(-power);
+
+            if(Math.abs(currDistance - distance) <= RANGE_DISTANCE_TOLERANCE){
+                stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            }
+            else{
+                startTime = System.nanoTime();
+            }
+
+        }
+
+        stop();
+    }
+
 
     public void rotateForTime(double power, double time)
     {
