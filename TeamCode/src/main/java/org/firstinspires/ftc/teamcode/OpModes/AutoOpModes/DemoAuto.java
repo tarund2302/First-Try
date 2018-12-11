@@ -47,5 +47,7 @@ public class DemoAuto extends LinearOpMode implements Constants,AutonomousOpMode
         robot.drivetrain.stop();
         gold.alignGold();
 
+
+
     }
 }

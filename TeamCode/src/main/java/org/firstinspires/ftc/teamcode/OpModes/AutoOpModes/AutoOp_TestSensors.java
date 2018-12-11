@@ -15,12 +15,13 @@ import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.Subsystems.GoldFinder;
 
 //v2 auto code made by Tarun Dasari, Rookie Programmer of 3846 Maelstrom
 //last update: November 21, 2018
 
-@Autonomous(name = "AutoOp_Encoders")
-public class AutoOp_TestEncoders extends LinearOpMode implements Constants, AutonomousOpMode
+@Autonomous(name = "AutoOp")
+public class AutoOp_TestSensors extends LinearOpMode implements Constants, AutonomousOpMode
 {
 
     private Hardware robot = new Hardware();
@@ -46,6 +47,9 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants, Auto
         robot.setAuto(this);
         robot.setTelemetry(telemetry);
         robot.init(hardwareMap);
+        /*GoldFinder gold = new GoldFinder(this, robot);
+        gold.setAlignSettings(ALIGN_POSITION,1000);
+        double goldPos = 0;*/
 /*
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -161,7 +165,29 @@ public class AutoOp_TestEncoders extends LinearOpMode implements Constants, Auto
         robot.drivetrain.driveDistance(40);
         robot.drivetrain.driveDistance(-40);
 
+/*
+        //testing for range sensor
+        robot.drivetrain.driveTillRangeDistance(4);
+        robot.drivetrain.stop();
+        sleep(5000);
+        robot.drivetrain.driveTillRangeDistance(2);
+        robot.drivetrain.stop();
+        sleep(5000);
+        robot.drivetrain.driveTillRangeDistance(6);
+*/
 
+       /* gold.startOpenCV(hardwareMap);
+
+        while(getOpModeIsActive() && !gold.isFound()){
+            robot.drivetrain.rotate(-0.30);
+            telemetry.addData("Aligned:", gold.getAligned());
+            telemetry.addData("Pos:",gold.getXPosition());
+            telemetry.update();
+        }
+        sleep(1000);
+        robot.drivetrain.stop();
+        gold.alignGold();
+*/
     }
 
 
