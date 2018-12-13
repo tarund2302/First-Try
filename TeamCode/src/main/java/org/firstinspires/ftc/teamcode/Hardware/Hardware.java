@@ -24,7 +24,7 @@ public class Hardware implements Constants {
 
     /*public Servo hookServo;
     public Servo markerServo;*/
-    public Servo latchServo;
+    //public Servo latchServo;
 
     //drivetrain
     public DcMotor motorFrontLeft;
@@ -70,11 +70,11 @@ public class Hardware implements Constants {
         //initialize servos (hook & marker)
         /*hookServo = hardwareMap.servo.get("hook");
         markerServo = hardwareMap.servo.get("marker");*/
-        latchServo = hardwareMap.servo.get("drop");
+       /* latchServo = hardwareMap.servo.get("drop");*/
 
         drivetrain = new Drivetrain(Hardware.this);
 
-        rangeSensor = new MaxbotixUltrasonicSensor(hardwareMap.analogInput.get("rangeSensor"));
+      /*  rangeSensor = new MaxbotixUltrasonicSensor(hardwareMap.analogInput.get("rangeSensor"));*/
 
 
 
