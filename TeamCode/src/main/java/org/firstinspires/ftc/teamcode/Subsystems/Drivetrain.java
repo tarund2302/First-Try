@@ -125,7 +125,7 @@ public class Drivetrain implements Constants {
         while(opModeIsActive() && (stopState <= 1000))
         {
             double ePos = (hardware.motorFrontLeft.getCurrentPosition());
-            double power = controlDrive.power(counts, ePos);
+            double power = 0.5*(controlDrive.power(counts, ePos));
             hardware.telemetry.addData("Power", power);
             hardware.telemetry.addData("Distance", countsToDistance(ePos));
             hardware.telemetry.addData("Error:", Math.abs(counts-ePos));
@@ -201,10 +201,8 @@ public class Drivetrain implements Constants {
     {
         leftDrive(-speed);
         rightDrive(speed);
-
-        while(opModeIsActive()){
-            hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
-        }
+        hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
+        hardware.telemetry.update();
     }
 
     public void turnAngle(double degrees)
@@ -219,9 +217,8 @@ public class Drivetrain implements Constants {
             double gPos = hardware.imu.getRelativeYaw();
             double power = Math.abs(degrees) < 50 ? smallTurnAngle.power(degrees,gPos) : turnAngle.power(degrees,gPos);
 
-            eReset();
-            leftDrive(power);
-            rightDrive(-power);
+            leftDrive(-power);
+            rightDrive(power);
 
             if(degrees < 50)
             {
@@ -230,6 +227,7 @@ public class Drivetrain implements Constants {
                 hardware.telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
                 hardware.telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
                 hardware.telemetry.addData("KD*d: ", smallTurnAngle.returnVal()[2]);
+                hardware.telemetry.addData("Power: ", power);
                 hardware.telemetry.update();
             }
 
