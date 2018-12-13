@@ -53,19 +53,19 @@ public interface Constants {
     long NANOSECS_PER_MILISEC = 1000000;
 
     //PID will be tested
-    double dtKP = 0.005;
+    double dtKP = 0.0035;
     double dtKI = 0;
     double dtKD = 0;
     double dtMaxI = 1;
 
     //turn angle (< 50) PID
-    double turnKP = 0.01;
+    double turnKP = 0.0015;
     double turnKI = 0;
     double turnKD = 0;
     double turnMaxI = 1;
 
     //turn big angle (> 50) PID
-    double turnBigKP = 0.01;
+    double turnBigKP = 0.013;
     double turnBigKI = 0;
     double turnBigKD = 0;
     double turnBigMaxI = 1;
