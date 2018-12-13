@@ -50,7 +50,7 @@ public class GoldFinder extends DogeCVDetector implements Constants {
 
     // Detector settings
     public double alignPosOffset  = 0;    // How far from center frame is aligned
-    public double alignSize       = 100;  // How wide is the margin of error for alignment
+    public double alignSize       = 1000;  // How wide is the margin of error for alignment
 
     public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
@@ -240,11 +240,10 @@ public class GoldFinder extends DogeCVDetector implements Constants {
     public void alignGold() {
         PIDController alignGold = new PIDController(alignGoldKP, alignGoldKI, alignGoldKD, alignGoldMaxI);
         long startTime = System.nanoTime();
-        long beginTime = startTime;
         long stopState = 0;
 
         while(opModeIsActive() && (stopState <= 1000)){
-            double power = alignGold.power(300,getXPosition());
+            double power = alignGold.power(315,getXPosition());
             telemetry.addLine("PIDAlign");
             telemetry.addData("Stopstate: ", stopState);
             telemetry.addData("Aligned:",getAligned());
@@ -257,16 +256,16 @@ public class GoldFinder extends DogeCVDetector implements Constants {
             telemetry.addData("KD*d: ",alignGold.returnVal()[2]);
             telemetry.update();
 
-            drivetrain.leftDrive(-power);
             drivetrain.leftDrive(power);
-
+            drivetrain.rightDrive(-power);
+/*
             if (Math.abs(315-getXPosition()) <= 25) {
                 stopState = (System.nanoTime() - startTime) / 1000000;
             }
             else {
                 startTime = System.nanoTime();
             }
-            drivetrain.stop();
+            *//*drivetrain.stop();*/
         }
     }
 

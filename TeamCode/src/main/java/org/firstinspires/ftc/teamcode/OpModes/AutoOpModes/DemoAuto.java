@@ -27,18 +27,19 @@ public class DemoAuto extends LinearOpMode implements Constants,AutonomousOpMode
     public void runOpMode(){
         robot.setAuto(this);
         robot.setTelemetry(telemetry);
+        robot.init(hardwareMap);
 
         GoldFinder gold = new GoldFinder(this, robot);
         gold.setAlignSettings(ALIGN_POSITION,1000);
-        robot.init(hardwareMap);
         double goldPos = 0;
 
         waitForStart();
 
         gold.startOpenCV(hardwareMap);
-
+        robot.drivetrain.stop();
+        sleep(5000);
         while(getOpModeIsActive() && !gold.isFound()){
-            robot.drivetrain.rotate(-0.30);
+            robot.drivetrain.rotate(-0.27);
             telemetry.addData("Aligned:", gold.getAligned());
             telemetry.addData("Pos:",gold.getXPosition());
             telemetry.update();
@@ -48,6 +49,8 @@ public class DemoAuto extends LinearOpMode implements Constants,AutonomousOpMode
         gold.alignGold();
 
 
-
+        if(!getOpModeIsActive()){
+            gold.disable();
+        }
     }
 }

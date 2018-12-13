@@ -47,9 +47,10 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
         robot.setAuto(this);
         robot.setTelemetry(telemetry);
         robot.init(hardwareMap);
-        /*GoldFinder gold = new GoldFinder(this, robot);
+
+        GoldFinder gold = new GoldFinder(this, robot);
         gold.setAlignSettings(ALIGN_POSITION,1000);
-        double goldPos = 0;*/
+        double goldPos = 0;
 /*
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
@@ -58,7 +59,7 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
 
         /*robot.hookServo.setPosition(HOOK_UP_POSITION);
         robot.markerServo.setPosition(MARKER_UP_POSITION);*/
-        robot.latchServo.setPosition(DROP_UP_POSITION);
+//        robot.latchServo.setPosition(DROP_UP_POSITION);
 
         waitForStart();
 
@@ -146,24 +147,32 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
 
         //test
 
-      /*  //testing for gyro
-        robot.drivetrain.turnAngle(90);
+        //testing for gyro
+        robot.drivetrain.turnAngle(40);
+        robot.drivetrain.stop();
+        sleep(2500);
         robot.drivetrain.turnAngle(-90);
         robot.drivetrain.stop();
         sleep(5000);
         robot.drivetrain.turnAngle(270);
-        robot.drivetrain.turnAngle(-300);
-        robot.drivetrain.stop();*/
-
-
-
-        //testing for encoders
-        robot.drivetrain.driveDistance(12);
         robot.drivetrain.stop();
-        sleep(2000);
+        sleep(5000);
+        robot.drivetrain.turnAngle(-300);
+        robot.drivetrain.stop();
+
+
+
+
+   /*     //testing for encoders
+        robot.drivetrain.driveDistance(24);
+        robot.drivetrain.stop();
+        sleep(10000);
         robot.drivetrain.driveDistance(-12);
-        robot.drivetrain.driveDistance(40);
-        robot.drivetrain.driveDistance(-40);
+        sleep(3000);
+        robot.drivetrain.driveDistance(10);
+        sleep(3000);
+        robot.drivetrain.driveDistance(-10);
+*/
 
 /*
         //testing for range sensor
@@ -176,10 +185,10 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
         robot.drivetrain.driveTillRangeDistance(6);
 */
 
-       /* gold.startOpenCV(hardwareMap);
+ /*      gold.startOpenCV(hardwareMap);
 
         while(getOpModeIsActive() && !gold.isFound()){
-            robot.drivetrain.rotate(-0.30);
+            robot.drivetrain.rotate(-0.33);
             telemetry.addData("Aligned:", gold.getAligned());
             telemetry.addData("Pos:",gold.getXPosition());
             telemetry.update();

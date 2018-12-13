@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.AutoOpModes;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //v1 code
 //basic auto code
+@Disabled
 @Autonomous(name = "AutoOp_Test")
 public class AutoOp_Test extends LinearOpMode {
 

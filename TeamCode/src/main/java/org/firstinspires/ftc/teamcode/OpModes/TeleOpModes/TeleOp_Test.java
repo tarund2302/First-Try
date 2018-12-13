@@ -87,7 +87,7 @@ public class TeleOp_Test extends OpMode implements Constants {
 
 */
         //toggle latch controls
-        if(toggle.toggle(gamepad1.x)) //latch down
+/*        if(toggle.toggle(gamepad1.x)) //latch down
         {
             robot.latchServo.setPosition(DROP_UP_POSITION);
         }
@@ -95,7 +95,7 @@ public class TeleOp_Test extends OpMode implements Constants {
         else //latch up
             {
             robot.latchServo.setPosition(DROP_DOWN_POSITION);
-        }
+        }*/
 
 
         //invert drivetrain controls
@@ -136,7 +136,6 @@ public class TeleOp_Test extends OpMode implements Constants {
         telemetry.addData("Right Front Motor Speed: ", robot.motorFrontRight.getPower());
         telemetry.addData("Left Back Motor Speed: ", robot.motorBackLeft.getPower());
         telemetry.addData("Right Back Motor Speed: ", robot.motorBackRight.getPower());
-        telemetry.addData("Latch Servo", robot.latchServo.getPosition());
         telemetry.update();
 
     }
