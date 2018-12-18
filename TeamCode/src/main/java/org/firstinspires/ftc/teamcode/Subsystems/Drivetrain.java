@@ -37,6 +37,11 @@ public class Drivetrain implements Constants {
     PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
     PIDController rangeDistance = new PIDController(rangeKP, rangeKI, rangeKD, rangeMaxI);
 
+    public double frontLeftData = hardware.motorFrontLeft.getPower();
+    public double frontRightData = hardware.motorFrontRight.getPower();
+    public double backLeftData = hardware.motorBackLeft.getPower();
+    public double backRightData = hardware.motorBackRight.getPower();
+
     public Drivetrain(Hardware hardware)
     {
         this.hardware = hardware;
@@ -116,7 +121,6 @@ public class Drivetrain implements Constants {
 
     public void driveDistance(double distance)
     {
-
         eReset();
         double counts = distanceToCounts(distance);
         long startTime = System.nanoTime();
@@ -125,7 +129,7 @@ public class Drivetrain implements Constants {
         while(opModeIsActive() && (stopState <= 1000))
         {
             double ePos = (hardware.motorFrontLeft.getCurrentPosition());
-            double power = 0.5*(controlDrive.power(counts, ePos));
+            double power = controlDrive.power(counts, ePos);
             hardware.telemetry.addData("Power", power);
             hardware.telemetry.addData("Distance", countsToDistance(ePos));
             hardware.telemetry.addData("Error:", Math.abs(counts-ePos));
@@ -143,9 +147,7 @@ public class Drivetrain implements Constants {
                 startTime = System.nanoTime();
             }
             telemetry.update();
-
         }
-
         stop();
     }
     public void driveTillRangeDistance(double distance){
@@ -300,7 +302,20 @@ public class Drivetrain implements Constants {
         }
         stop();
     }*/
+/*
+    public void getTelemetryData() {
+        *//*telemetry.addData("Left Front Motor Speed: ", motorFrontLeft.getPower());
+        telemetry.addData("Right Front Motor Speed: ", motorFrontRight.getPower());
+        telemetry.addData("Left Back Motor Speed: ", motorBackLeft.getPower());
+        telemetry.addData("Right Back Motor Speed: ", motorBackRight.getPower());
+        telemetry.update();*//*
 
+    }*/
+
+    public double[] getData(){
+        double dtData[] = {frontLeftData,frontRightData,backLeftData,backRightData};
+        return dtData;
+    }
 
     public boolean opModeIsActive()
     {
