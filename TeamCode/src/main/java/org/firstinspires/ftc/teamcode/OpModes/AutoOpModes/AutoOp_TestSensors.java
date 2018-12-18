@@ -25,8 +25,6 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
 {
 
     private Hardware robot = new Hardware();
-    /*private ElapsedTime runtime = new ElapsedTime();*/
-    //private Drivetrain drivetrain = new Drivetrain(Hardware hardwareMap);
 
     public boolean getOpModeIsActive()
     {
@@ -151,13 +149,13 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
         robot.drivetrain.turnAngle(40);
         robot.drivetrain.stop();
         sleep(2500);
-        robot.drivetrain.turnAngle(-90);
+        robot.drivetrain.turnAngle(-35);
         robot.drivetrain.stop();
         sleep(5000);
-        robot.drivetrain.turnAngle(270);
+        robot.drivetrain.turnAngle(20);
         robot.drivetrain.stop();
         sleep(5000);
-        robot.drivetrain.turnAngle(-300);
+        robot.drivetrain.turnAngle(30);
         robot.drivetrain.stop();
 
 

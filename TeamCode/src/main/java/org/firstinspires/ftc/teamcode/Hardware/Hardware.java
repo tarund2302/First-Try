@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Hardware;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,7 +9,9 @@ import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Sensors.BNO055_IMU;
 import org.firstinspires.ftc.teamcode.Sensors.MaxbotixUltrasonicSensor;
+import org.firstinspires.ftc.teamcode.Subsystems.Actuator;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.Subsystems.Extender;
 
 public class Hardware implements Constants {
 
@@ -22,10 +25,9 @@ public class Hardware implements Constants {
 
     public MaxbotixUltrasonicSensor rangeSensor;
 
-    /*public Servo hookServo;
-    public Servo markerServo;*/
-    //public Servo latchServo;
-
+    public Servo markerServo;
+    public Servo latchServo;
+    public Servo servo;
     //drivetrain
     public DcMotor motorFrontLeft;
     public DcMotor motorFrontRight;
@@ -33,14 +35,14 @@ public class Hardware implements Constants {
     public DcMotor motorBackRight;
 
     //extendo & actuator
-   /* public DcMotor motorExtendo1;
+    public DcMotor motorExtendo1;
     public DcMotor motorExtendo2;
-    public DcMotor motorActuator;*/
+    public DcMotor motorActuator;
 
     public Drivetrain drivetrain;
-
+    public Actuator actuator;
+    public Extender markerSystem;
     public DcMotor[] drivetrainMotors;
-
 
     public void init (HardwareMap hardwareMap)
     {
@@ -71,6 +73,7 @@ public class Hardware implements Constants {
         /*hookServo = hardwareMap.servo.get("hook");
         markerServo = hardwareMap.servo.get("marker");*/
        /* latchServo = hardwareMap.servo.get("drop");*/
+        servo = hardwareMap.servo.get("servo");
 
         drivetrain = new Drivetrain(Hardware.this);
 
