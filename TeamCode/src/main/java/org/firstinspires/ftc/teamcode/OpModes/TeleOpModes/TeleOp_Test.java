@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Control.Toggle;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 //v3 teleop code made by Tarun Dasari, Rookie Programmer of 3846 Maelstrom
-//last update: December 9, 2018
+//last update: December 18, 2018
 
 @TeleOp(name ="TeleOp_Test")
 public class TeleOp_Test extends OpMode implements Constants {
@@ -22,6 +22,7 @@ public class TeleOp_Test extends OpMode implements Constants {
     public void init() {
         //initialize hardware
         robot.init(hardwareMap);
+        robot.climber.reset();
 
     }
 
@@ -34,56 +35,60 @@ public class TeleOp_Test extends OpMode implements Constants {
         double x = yDirection + xDirection;
 
         // NFS controls for drivetrain
-        robot.drivetrain.leftDrive(y);
-        robot.drivetrain.rightDrive(x);
+        /*robot.drivetrain.leftDrive(y);
+        robot.drivetrain.rightDrive(x);*/
+        robot.drivetrain.driveNFS(yDirection, xDirection);
 
         //invert drivetrain controls
-        if(toggle.toggle(gamepad1.y)) //switch to tank
+        if(toggle.toggle(gamepad1.y)) //switch to tank controls
         {
             if(toggle.toggle(gamepad1.x)) //invert the drivetrain
             {
-                robot.drivetrain.leftDrive(SPEED_MUlTIPLIER * -gamepad1.left_stick_y);
-                robot.drivetrain.rightDrive(SPEED_MUlTIPLIER * -gamepad1.right_stick_y);
+                /*robot.drivetrain.leftDrive(SPEED_MUlTIPLIER * -gamepad1.left_stick_y);
+                robot.drivetrain.rightDrive(SPEED_MUlTIPLIER * -gamepad1.right_stick_y);*/
+                robot.drivetrain.driveTank(-gamepad1.left_stick_y,-gamepad1.right_stick_y);
                 telemetry.addLine("Tank invert");
                 telemetry.update();
             }
             else //leave controls as normal
             {
-                robot.drivetrain.leftDrive(SPEED_MUlTIPLIER * gamepad1.left_stick_y);
-                robot.drivetrain.rightDrive(SPEED_MUlTIPLIER * gamepad1.right_stick_y);
+                /*robot.drivetrain.leftDrive(SPEED_MUlTIPLIER * gamepad1.left_stick_y);
+                robot.drivetrain.rightDrive(SPEED_MUlTIPLIER * gamepad1.right_stick_y);*/
+                robot.drivetrain.driveTank(gamepad1.left_stick_y,gamepad1.right_stick_y);
                 telemetry.addLine("Tank normal");
                 telemetry.update();
-
             }
         }
-        else //do NFS controls
+        else //switch to NFS controls
         {
             if(toggle.toggle(gamepad1.x)) //invert the drivetrain
             {
-                robot.drivetrain.leftDrive(-y);
-                robot.drivetrain.rightDrive(-x);
+                /*robot.drivetrain.leftDrive(-y);
+                robot.drivetrain.rightDrive(-x);*/
+                robot.drivetrain.driveNFS(-yDirection, -xDirection);
                 telemetry.addLine("NFS invert");
                 telemetry.update();
 
             }
             else //leave controls as normal
             {
-                robot.drivetrain.leftDrive(y);
-                robot.drivetrain.rightDrive(x);
+                /*robot.drivetrain.leftDrive(y);
+                robot.drivetrain.rightDrive(x);*/
+                robot.drivetrain.driveNFS(yDirection, xDirection);
                 telemetry.addLine("NFS normal");
                 telemetry.update();
             }
         }
 
-        //controls for actuator
+        //controls for climber
         if(gamepad1.right_bumper){
-            robot.actuator.raise();
+            robot.climber.raise();
         }
         else if(gamepad1.left_bumper){
-            robot.actuator.lower();
+            robot.climber.lower();
         }
         else{
-            robot.actuator.stop();
+            robot.climber.stop();
         }
 
         //controls for extender
@@ -106,12 +111,12 @@ public class TeleOp_Test extends OpMode implements Constants {
         }
 
         //telemetry
-        //show the speed of drivetrain motors
         telemetry.addData("Left Front Motor Speed: ", robot.drivetrain.getData()[0]);
         telemetry.addData("Right Front Motor Speed: ", robot.drivetrain.getData()[1]);
         telemetry.addData("Left Back Motor Speed: ", robot.drivetrain.getData()[2]);
         telemetry.addData("Right Back Motor Speed: ", robot.drivetrain.getData()[3]);
-        telemetry.addData("Actuator:",robot.actuator.getData());
+        telemetry.addData("Actuator Power:",robot.climber.getData()[0]);
+        telemetry.addData("Actuator Position:",robot.climber.getData()[1]);
         telemetry.update();
 
     }
