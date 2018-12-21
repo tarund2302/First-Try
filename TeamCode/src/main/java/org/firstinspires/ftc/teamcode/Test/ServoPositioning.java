@@ -9,14 +9,12 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 @TeleOp(name = "ServoTesting")
 public class ServoPositioning extends OpMode{
 
-    private Hardware robot = new Hardware();
     public Servo servo;
     @Override
     public void init() {
         servo = hardwareMap.servo.get("servo");
         servo.setPosition(0);
     }
-
     @Override
     public void loop() {
         double currPosition = servo.getPosition();
@@ -35,5 +33,6 @@ public class ServoPositioning extends OpMode{
             servo.setPosition(currPosition - .01);
         }
         telemetry.addData("Servo position:", servo.getPosition());
+        telemetry.update();
     }
 }
