@@ -29,13 +29,16 @@ public class Drivetrain implements Constants {
     private Telemetry telemetry;
     private AutonomousOpMode auto;
     private Hardware hardware;
-    private Toggle toggle;
-    private ElapsedTime runtime = new ElapsedTime();
+    private double yDirection;
+    private double xDirection;
+    public boolean side = false;
 
     PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
     PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
     PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
     PIDController rangeDistance = new PIDController(rangeKP, rangeKI, rangeKD, rangeMaxI);
+    PIDController turnSide = new PIDController(sideKP, sideKI, sideKD, sideMaxI);
+    PIDController bigTurnSide = new PIDController(bigSideKP, bigSideKI, bigSideKD, sideMaxI);
 
     public double frontLeftData = hardware.motorFrontLeft.getPower();
     public double frontRightData = hardware.motorFrontRight.getPower();
@@ -75,19 +78,43 @@ public class Drivetrain implements Constants {
         hardware.motorBackRight.setPower(power);
     }
 
-    public void drive(double leftPower, double rightPower)
+    /*public void drive(double leftPower, double rightPower)
     {
         hardware.motorFrontLeft.setPower(leftPower);
         hardware.motorBackLeft.setPower(leftPower);
         hardware.motorFrontRight.setPower(rightPower);
         hardware.motorBackRight.setPower(rightPower);
+    }*/
+
+    public void driveNFS(double leftStickY, double rightStickX){
+        yDirection = SPEED_MUlTIPLIER * leftStickY;
+        xDirection = SPEED_MUlTIPLIER * rightStickX;
+
+        double y = yDirection - xDirection;
+        double x = yDirection + xDirection;
+
+        leftDrive(y);
+        rightDrive(x);
+    }
+
+    public void driveTank(double leftStickY, double rightStickY){
+        leftStickY *= SPEED_MUlTIPLIER;
+        rightStickY *= SPEED_MUlTIPLIER;
+
+        leftDrive(leftStickY);
+        rightDrive(rightStickY);
     }
 
     //stop drivetrain
-    public void stop()
-    {
+    public void stop(){
         leftDrive(0);
         rightDrive(0);
+    }
+
+    public void stopTime(long time){
+        leftDrive(0);
+        rightDrive(0);
+        sleep(time);
     }
 
     //reset encoders
@@ -180,8 +207,7 @@ public class Drivetrain implements Constants {
     }
 
 
-    public void rotateForTime(double power, double time)
-    {
+    public void rotateForTime(double power, double time){
         eReset();
         long startTime = System.nanoTime();
         long stopState = 0;
@@ -199,31 +225,25 @@ public class Drivetrain implements Constants {
 
     }
 
-    public void rotate(double speed)
-    {
+    public void rotate(double speed){
         leftDrive(-speed);
         rightDrive(speed);
         hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
         hardware.telemetry.update();
     }
 
-    public void turnAngle(double degrees)
-    {
-
+    public void turnAngle(double degrees){
         long startTime = System.nanoTime();
         long stopState = 0;
 
-
-        while(opModeIsActive() && (stopState <= 1000))
-        {
+        while(opModeIsActive() && (stopState <= 1000)){
             double gPos = hardware.imu.getRelativeYaw();
             double power = Math.abs(degrees) < 50 ? smallTurnAngle.power(degrees,gPos) : turnAngle.power(degrees,gPos);
 
             leftDrive(-power);
             rightDrive(power);
 
-            if(degrees < 50)
-            {
+            if(degrees < 50){
                 hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
                 hardware.telemetry.addLine("");
                 hardware.telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
@@ -233,13 +253,66 @@ public class Drivetrain implements Constants {
                 hardware.telemetry.update();
             }
 
-            else
-            {
+            else{
                 hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
                 hardware.telemetry.addLine("");
                 hardware.telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
                 hardware.telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
                 hardware.telemetry.addData("KD*d: ", turnAngle.returnVal()[2]);
+                hardware.telemetry.update();
+            }
+
+            if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE){
+                stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            }
+
+            else{
+                startTime = System.nanoTime();
+            }
+
+            if(System.nanoTime()/NANOSECS_PER_MILISEC-startTime/NANOSECS_PER_MILISEC>3000){
+                break;
+            }
+        }
+        stop();
+    }
+
+    public void sideTurnAngle(double degrees, boolean side){
+
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        while(opModeIsActive() && (stopState <= 1000))
+        {
+            double gPos = hardware.imu.getRelativeYaw();
+            double power = Math.abs(degrees) < 50 ? turnSide.power(degrees,gPos) : bigTurnSide.power(degrees,gPos);
+
+            if(side){
+                leftDrive(power);
+                rightDrive(0);
+            }
+            else if(!side){
+                leftDrive(0);
+                rightDrive(power);
+            }
+
+            if(degrees < 50)
+            {
+                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                hardware.telemetry.addLine("");
+                hardware.telemetry.addData("KP*error: ", turnSide.returnVal()[0]);
+                hardware.telemetry.addData("KI*i: ", turnSide.returnVal()[1]);
+                hardware.telemetry.addData("KD*d: ", turnSide.returnVal()[2]);
+                hardware.telemetry.addData("Power: ", power);
+                hardware.telemetry.update();
+            }
+            else
+            {
+                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                hardware.telemetry.addLine("");
+                hardware.telemetry.addData("KP*error: ", bigTurnSide.returnVal()[0]);
+                hardware.telemetry.addData("KI*i: ", bigTurnSide.returnVal()[1]);
+                hardware.telemetry.addData("KD*d: ", bigTurnSide.returnVal()[2]);
                 hardware.telemetry.update();
             }
 
@@ -257,8 +330,6 @@ public class Drivetrain implements Constants {
             {
                 break;
             }
-
-
         }
         stop();
     }
@@ -267,50 +338,13 @@ public class Drivetrain implements Constants {
         turnAngle(hardware.imu.getYaw()+degrees);
     }
 
-    /*public void rotateBigAngle(double angle)
-    {
-        eReset();
-        long startTime = System.nanoTime();
-        long stopState = 0;
-
-        double degrees = angle;
-
-        while((opModeIsActive() && (stopState <= 1000)))
-        {
-            double gPos = hardware.imu.getRelativeYaw();
-            double power = rotateAngle.power(degrees,gPos);
-
-            leftDrive(-power);
-            rightDrive(power);
-
-            telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
-            telemetry.addLine("");
-            telemetry.addData("KP*error: ", rotateAngle.returnVal()[0]);
-            telemetry.addData("KI*i: ", rotateAngle.returnVal()[1]);
-            telemetry.addData("KD*d: ", rotateAngle.returnVal()[2]);
-            telemetry.update();
-
-            if (Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE)
-            {
-                stopState = (System.nanoTime() - startTime) / 1000000;
-            }
-            else
-            {
-                startTime = System.nanoTime();
-            }
-
+    public final void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
-        stop();
-    }*/
-/*
-    public void getTelemetryData() {
-        *//*telemetry.addData("Left Front Motor Speed: ", motorFrontLeft.getPower());
-        telemetry.addData("Right Front Motor Speed: ", motorFrontRight.getPower());
-        telemetry.addData("Left Back Motor Speed: ", motorBackLeft.getPower());
-        telemetry.addData("Right Back Motor Speed: ", motorBackRight.getPower());
-        telemetry.update();*//*
-
-    }*/
+    }
 
     public double[] getData(){
         double dtData[] = {frontLeftData,frontRightData,backLeftData,backRightData};
