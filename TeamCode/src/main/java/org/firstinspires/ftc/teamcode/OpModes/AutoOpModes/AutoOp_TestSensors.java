@@ -40,8 +40,6 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
     @Override
     public void runOpMode() {
 
-        //robot.setAuto(this, telemetry);
-
         robot.setAuto(this);
         robot.setTelemetry(telemetry);
         robot.init(hardwareMap);
@@ -49,137 +47,51 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
         GoldFinder gold = new GoldFinder(this, robot);
         gold.setAlignSettings(ALIGN_POSITION,1000);
         double goldPos = 0;
-/*
-        telemetry.addData("Status", "Resetting Encoders");    //
-        telemetry.update();
-
-        robot.drivetrain.eReset();*/
-
-        /*robot.hookServo.setPosition(HOOK_UP_POSITION);
-        robot.markerServo.setPosition(MARKER_UP_POSITION);*/
-//        robot.latchServo.setPosition(DROP_UP_POSITION);
 
         waitForStart();
 
         robot.drivetrain.eReset();
-/*
-
-        //unlatch
-        */
-/*robot.motorActuator.setPower(1);
-        sleep(1260);
-        robot.motorActuator.setPower(0);
-        *//*
-*/
-/*robot.hookServo.setPosition(HOOK_DOWN_POSITION);*//*
-*/
-/*
-        robot.motorActuator.setPower(-1);
-        sleep(1500);
-        robot.motorActuator.setPower(0);*//*
-
-
-        //drop
-        robot.latchServo.setPosition(DROP_DOWN_POSITION);
-        robot.drivetrain.stop();
-        sleep(500);
-
-        //drive towards crater
-        robot.drivetrain.driveDistance(36);
-*/
-/*
-
-        //extend marker lift and drop marker
-        robot.motorExtendo1.setPower(EXTENDO_EXTEND_POWER);
-        robot.motorExtendo2.setPower(EXTENDO_EXTEND_POWER);
-        sleep(1000);
-        robot.motorExtendo1.setPower(0);
-        robot.motorExtendo2.setPower(0);
-        *//*
-
-*/
-/*robot.markerServo.setPosition(MARKER_DOWN_POSITION);*//*
-*/
-/*
-
-        sleep(500);
-        *//*
-
-*/
-/*robot.markerServo.setPosition(MARKER_UP_POSITION);*//*
-*/
-/*
-
-
-        //retract marker lift
-        robot.motorExtendo1.setPower(EXTENDO_RETRACT_POWER);
-        robot.motorExtendo2.setPower(EXTENDO_RETRACT_POWER);
-        sleep(1000);
-        robot.motorExtendo1.setPower(0);
-        robot.motorExtendo2.setPower(0);
-*//*
-
-
-        //rotate towards crater from front of bot
-        robot.drivetrain.turnAngle(-150);
-
-        //drive towards crater
-        robot.drivetrain.driveDistance(60);
-
-*/
-/*
-
-        //extend to pass over crater rim
-        robot.motorExtendo1.setPower(1);
-        robot.motorExtendo2.setPower(1);
-        sleep(1750);
-        robot.motorExtendo1.setPower(0);
-        robot.motorExtendo2.setPower(0);
-*/
-
-
-      /*  while(opModeIsActive()){
-            telemetry.addData("drop position", robot.latchServo.getPosition());
-            telemetry.update();
-        }*/
 
         //test
 
         //testing for gyro
         robot.drivetrain.turnAngle(40);
-        robot.drivetrain.stop();
-        sleep(2500);
+        robot.drivetrain.stopTime(2500);
         robot.drivetrain.turnAngle(-35);
-        robot.drivetrain.stop();
-        sleep(5000);
+        robot.drivetrain.stopTime(5000);
         robot.drivetrain.turnAngle(20);
-        robot.drivetrain.stop();
-        sleep(5000);
+        robot.drivetrain.stopTime(5000);
         robot.drivetrain.turnAngle(30);
         robot.drivetrain.stop();
-
-
-
-
+   /*
+        //testing one side turns
+        robot.drivetrain.sideTurnAngle(30, true);
+        robot.drivetrain.stopTime(2500);
+        robot.drivetrain.sideTurnAngle(-25, false);
+        robot.drivetrain.stopTime(3000);
+        robot.drivetrain.sideTurnAngle(90, true);
+        robot.drivetrain.stopTime(2000);;
+        robot.drivetrain.sideTurnAngle(30, false);
+        robot.drivetrain.stopTime(2500);
+        robot.drivetrain.sideTurnAngle(100, false);
+        robot.drivetrain.stop();
+        */
    /*     //testing for encoders
         robot.drivetrain.driveDistance(24);
-        robot.drivetrain.stop();
-        sleep(10000);
+        robot.drivetrain.stopTime(5000);
         robot.drivetrain.driveDistance(-12);
-        sleep(3000);
+        robot.drivetrain.stopTime(300);
         robot.drivetrain.driveDistance(10);
-        sleep(3000);
+        robot.drivetrain.stopTime(3000);
         robot.drivetrain.driveDistance(-10);
 */
 
 /*
         //testing for range sensor
         robot.drivetrain.driveTillRangeDistance(4);
-        robot.drivetrain.stop();
-        sleep(5000);
+        robot.drivetrain.stopTime(5000);
         robot.drivetrain.driveTillRangeDistance(2);
-        robot.drivetrain.stop();
-        sleep(5000);
+        robot.drivetrain.stopTime(5000);
         robot.drivetrain.driveTillRangeDistance(6);
 */
 
