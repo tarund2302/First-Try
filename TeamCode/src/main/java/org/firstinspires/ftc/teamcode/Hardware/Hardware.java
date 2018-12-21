@@ -40,7 +40,7 @@ public class Hardware implements Constants {
     public DcMotor motorActuator;
 
     public Drivetrain drivetrain;
-    public Actuator actuator;
+    public Actuator climber;
     public Extender markerSystem;
     public DcMotor[] drivetrainMotors;
 
@@ -73,7 +73,7 @@ public class Hardware implements Constants {
         /*hookServo = hardwareMap.servo.get("hook");
         markerServo = hardwareMap.servo.get("marker");*/
        /* latchServo = hardwareMap.servo.get("drop");*/
-        servo = hardwareMap.servo.get("servo");
+       /* servo = hardwareMap.servo.get("servo");*/
 
         drivetrain = new Drivetrain(Hardware.this);
 
