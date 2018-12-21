@@ -45,10 +45,15 @@ public interface Constants {
     double DISTANCE_TOLERANCE = .5;
     double IMU_TOLERANCE = 0.5;
     double RANGE_DISTANCE_TOLERANCE = 0.1;
+    double ACTUATOR_TOLERANCE = 10;
 
     //used for encoder drive
     double DRIVE_SPEED = 0.5;
     double TURN_SPEED = 0.2;
+
+    double NUM_OF_CLIMB_REVS = 9;
+    double RAISE_POSITION = NUM_OF_CLIMB_REVS*ORBITAL_3_7_COUNTS_PER_REV;
+    double LOWER_POSITION = 0;
 
     double NANOSECS_PER_MIN = 6e+10;
     long NANOSECS_PER_MILISEC = 1000000;
@@ -71,6 +76,17 @@ public interface Constants {
     double turnBigKD = 0;
     double turnBigMaxI = 1;
 
+    //turn one side PID
+    double sideKP = 0.001;
+    double sideKI = 0;
+    double sideKD = 0;
+    double sideMaxI = 1;
+
+    double bigSideKP = 0.001;
+    double bigSideKI = 0;
+    double bigSideKD = 0;
+    double bigSideMaxI = 1;
+
     //opencv goldfind PID
     double alignGoldKP = 0.001;
     double alignGoldKI = 0;
@@ -82,6 +98,11 @@ public interface Constants {
     double rangeKI = 0;
     double rangeKD = 0;
     double rangeMaxI = 1;
+
+    double climberKP = 0.001;
+    double climberKI = 0;
+    double climberKD = 0;
+    double climberMaxI = 0;
 
     int ALIGN_POSITION = -100;
 
