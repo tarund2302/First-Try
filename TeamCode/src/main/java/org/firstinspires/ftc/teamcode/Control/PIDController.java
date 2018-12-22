@@ -13,16 +13,14 @@ public class PIDController implements Constants{
     private double previousTime = 0;
 
 
-    public PIDController(double KP, double KI, double KD, double maxI)
-    {
+    public PIDController(double KP, double KI, double KD, double maxI){
         this.KP = KP;
         this.KI = KI;
         this.KD = KD;
         this.maxI = maxI;
     }
 
-    public double power(double target, double currentLoc)
-    {
+    public double power(double target, double currentLoc){
         double error = target - currentLoc;
         this.error = error;
         double deltaTime = (System.nanoTime() - previousTime)/NANOSECS_PER_MIN;
@@ -34,7 +32,7 @@ public class PIDController implements Constants{
         return power;
     }
 
-    public double[] returnVal() {
+    public double[] returnVal(){
         double PID[] = {(KP * error), (KI * i), (KD * d), power};
         return PID;
     }
@@ -67,7 +65,7 @@ public class PIDController implements Constants{
         this.KD = KD;
     }
 
-    public void reset() {
+    public void reset(){
         i = 0;
         previousError = 0;
     }

@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Sensors.BNO055_IMU;
 import org.firstinspires.ftc.teamcode.Sensors.MaxbotixUltrasonicSensor;
-import org.firstinspires.ftc.teamcode.Subsystems.Actuator;
+//import org.firstinspires.ftc.teamcode.Subsystems.Actuator;
 import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
-import org.firstinspires.ftc.teamcode.Subsystems.Extender;
+//import org.firstinspires.ftc.teamcode.Subsystems.Extender;
 
 public class Hardware implements Constants {
 
@@ -35,13 +35,13 @@ public class Hardware implements Constants {
     public DcMotor motorBackRight;
 
     //extendo & actuator
-    public DcMotor motorExtendo1;
+ /*   public DcMotor motorExtendo1;
     public DcMotor motorExtendo2;
     public DcMotor motorActuator;
-
+*/
     public Drivetrain drivetrain;
-    public Actuator climber;
-    public Extender markerSystem;
+/*    public Actuator climber;
+    public Extender markerSystem;*/
     public DcMotor[] drivetrainMotors;
 
     public void init (HardwareMap hardwareMap)

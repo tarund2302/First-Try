@@ -19,19 +19,17 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 
 public class Drivetrain implements Constants {
 
-    private DcMotor motorFrontLeft;
-    private DcMotor motorFrontRight;
-    private DcMotor motorBackLeft;
-    private DcMotor motorBackRight;
-   /* public Drivetrain drivetrain;*/
-
+    public DcMotor motorFrontLeft;
+    public DcMotor motorFrontRight;
+    public DcMotor motorBackLeft;
+    public DcMotor motorBackRight;
 
     private Telemetry telemetry;
     private AutonomousOpMode auto;
     private Hardware hardware;
     private double yDirection;
     private double xDirection;
-    public boolean side = false;
+    public boolean leftSide = false;
 
     PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
     PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
@@ -40,10 +38,10 @@ public class Drivetrain implements Constants {
     PIDController turnSide = new PIDController(sideKP, sideKI, sideKD, sideMaxI);
     PIDController bigTurnSide = new PIDController(bigSideKP, bigSideKI, bigSideKD, sideMaxI);
 
-    public double frontLeftData = hardware.motorFrontLeft.getPower();
-    public double frontRightData = hardware.motorFrontRight.getPower();
-    public double backLeftData = hardware.motorBackLeft.getPower();
-    public double backRightData = hardware.motorBackRight.getPower();
+   /* public double frontLeftData = motorFrontLeft.getPower();
+    public double frontRightData = motorFrontRight.getPower();
+    public double backLeftData = motorBackLeft.getPower();
+    public double backRightData = motorBackRight.getPower();*/
 
     public Drivetrain(Hardware hardware)
     {
@@ -55,27 +53,27 @@ public class Drivetrain implements Constants {
         auto = hardware.auto;
         telemetry = hardware.telemetry;
 
-        //reverse left side of drivetrain
-        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
+        /*//reverse left side of drivetrain
+        hardware.motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        hardware.motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
 
-
+*/
     }
 
 
     //left drive contorls
     public void leftDrive(double power)
     {
-        hardware.motorFrontLeft.setPower(power);
-        hardware.motorBackLeft.setPower(power);
+        motorFrontLeft.setPower(power);
+        motorBackLeft.setPower(power);
 
     }
 
     //right drive controls
     public void rightDrive(double power)
     {
-        hardware.motorFrontRight.setPower(power);
-        hardware.motorBackRight.setPower(power);
+        motorFrontRight.setPower(power);
+        motorBackRight.setPower(power);
     }
 
     /*public void drive(double leftPower, double rightPower)
@@ -213,10 +211,10 @@ public class Drivetrain implements Constants {
         long stopState = 0;
 
         while(stopState <= time){
-            hardware.motorFrontLeft.setPower(-power);
-            hardware.motorBackLeft.setPower(-power);
-            hardware.motorFrontRight.setPower(power);
-            hardware.motorBackRight.setPower(power);
+            motorFrontLeft.setPower(-power);
+            motorBackLeft.setPower(-power);
+            motorFrontRight.setPower(power);
+            motorBackRight.setPower(power);
 
             stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
         }
@@ -277,27 +275,25 @@ public class Drivetrain implements Constants {
         stop();
     }
 
-    public void sideTurnAngle(double degrees, boolean side){
+    public void sideTurnAngle(double degrees, boolean leftSide){
 
         long startTime = System.nanoTime();
         long stopState = 0;
 
-        while(opModeIsActive() && (stopState <= 1000))
-        {
+        while(opModeIsActive() && (stopState <= 1000)){
             double gPos = hardware.imu.getRelativeYaw();
             double power = Math.abs(degrees) < 50 ? turnSide.power(degrees,gPos) : bigTurnSide.power(degrees,gPos);
 
-            if(side){
+            if(leftSide){
                 leftDrive(power);
                 rightDrive(0);
             }
-            else if(!side){
+            else if(!leftSide){
                 leftDrive(0);
                 rightDrive(power);
             }
 
-            if(degrees < 50)
-            {
+            if(degrees < 50){
                 hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
                 hardware.telemetry.addLine("");
                 hardware.telemetry.addData("KP*error: ", turnSide.returnVal()[0]);
@@ -306,8 +302,7 @@ public class Drivetrain implements Constants {
                 hardware.telemetry.addData("Power: ", power);
                 hardware.telemetry.update();
             }
-            else
-            {
+            else{
                 hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
                 hardware.telemetry.addLine("");
                 hardware.telemetry.addData("KP*error: ", bigTurnSide.returnVal()[0]);
@@ -316,18 +311,15 @@ public class Drivetrain implements Constants {
                 hardware.telemetry.update();
             }
 
-            if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE)
-            {
+            if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE){
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
 
-            else
-            {
+            else{
                 startTime = System.nanoTime();
             }
 
-            if(System.nanoTime()/NANOSECS_PER_MILISEC-startTime/NANOSECS_PER_MILISEC>3000)
-            {
+            if(System.nanoTime()/NANOSECS_PER_MILISEC-startTime/NANOSECS_PER_MILISEC>3000){
                 break;
             }
         }
@@ -346,10 +338,10 @@ public class Drivetrain implements Constants {
         }
     }
 
-    public double[] getData(){
+  /*  public double[] getData(){
         double dtData[] = {frontLeftData,frontRightData,backLeftData,backRightData};
         return dtData;
-    }
+    }*/
 
     public boolean opModeIsActive()
     {

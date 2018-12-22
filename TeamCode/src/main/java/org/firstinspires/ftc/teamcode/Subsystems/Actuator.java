@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,13 +23,17 @@ public class Actuator implements Constants {
     }
 
     public void raise(){
-        /*motorActuator.setPower(ACTUATOR_POWER);*/
+        */
+/*motorActuator.setPower(ACTUATOR_POWER);*//*
+
         double power = getPower(RAISE_POSITION);
         setPower(power);
     }
 
     public void lower(){
-        /*motorActuator.setPower(-ACTUATOR_POWER);*/
+        */
+/*motorActuator.setPower(-ACTUATOR_POWER);*//*
+
         double power = getPower(LOWER_POSITION);
         setPower(power);
     }
@@ -73,3 +78,4 @@ public class Actuator implements Constants {
     }
 
 }
+*/

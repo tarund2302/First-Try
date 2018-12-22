@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOpModes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Control.Toggle;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
@@ -17,41 +18,41 @@ public class TeleOp_Test extends OpMode implements Constants {
     private Toggle toggle = new Toggle();
     private double yDirection;
     private double xDirection;
-
+    double currDistance = robot.rangeSensor.getDistance(DistanceUnit.INCH);
     @Override
     public void init() {
         //initialize hardware
         robot.init(hardwareMap);
-        robot.climber.reset();
+        //robot.climber.reset();
 
     }
 
     @Override
     public void loop() {
+/*
+
         yDirection = SPEED_MUlTIPLIER * gamepad1.left_stick_y;
         xDirection = SPEED_MUlTIPLIER * gamepad1.right_stick_x;
 
         double y = yDirection - xDirection;
         double x = yDirection + xDirection;
-
+*/
         // NFS controls for drivetrain
         /*robot.drivetrain.leftDrive(y);
         robot.drivetrain.rightDrive(x);*/
-        robot.drivetrain.driveNFS(yDirection, xDirection);
+        robot.drivetrain.driveNFS(gamepad1.left_stick_y, gamepad1.right_stick_x);
 
         //invert drivetrain controls
-        if(toggle.toggle(gamepad1.y)) //switch to tank controls
-        {
-            if(toggle.toggle(gamepad1.x)) //invert the drivetrain
-            {
+        if(toggle.toggle(gamepad1.y)){ //switch to tank controls
+
+            if(toggle.toggle(gamepad1.x)){ //invert the drivetrain
                 /*robot.drivetrain.leftDrive(SPEED_MUlTIPLIER * -gamepad1.left_stick_y);
                 robot.drivetrain.rightDrive(SPEED_MUlTIPLIER * -gamepad1.right_stick_y);*/
                 robot.drivetrain.driveTank(-gamepad1.left_stick_y,-gamepad1.right_stick_y);
                 telemetry.addLine("Tank invert");
                 telemetry.update();
             }
-            else //leave controls as normal
-            {
+            else{//leave controls as normal
                 /*robot.drivetrain.leftDrive(SPEED_MUlTIPLIER * gamepad1.left_stick_y);
                 robot.drivetrain.rightDrive(SPEED_MUlTIPLIER * gamepad1.right_stick_y);*/
                 robot.drivetrain.driveTank(gamepad1.left_stick_y,gamepad1.right_stick_y);
@@ -59,65 +60,45 @@ public class TeleOp_Test extends OpMode implements Constants {
                 telemetry.update();
             }
         }
-        else //switch to NFS controls
-        {
-            if(toggle.toggle(gamepad1.x)) //invert the drivetrain
-            {
+        else{ //switch to NFS controls
+            if(toggle.toggle(gamepad1.x)){//invert the drivetrain
                 /*robot.drivetrain.leftDrive(-y);
                 robot.drivetrain.rightDrive(-x);*/
-                robot.drivetrain.driveNFS(-yDirection, -xDirection);
+                robot.drivetrain.driveNFS(-gamepad1.left_stick_y, -gamepad1.right_stick_x);
                 telemetry.addLine("NFS invert");
                 telemetry.update();
 
             }
-            else //leave controls as normal
-            {
+            else{ //leave controls as normal
                 /*robot.drivetrain.leftDrive(y);
                 robot.drivetrain.rightDrive(x);*/
-                robot.drivetrain.driveNFS(yDirection, xDirection);
+                robot.drivetrain.driveNFS(gamepad1.left_stick_y, gamepad1.right_stick_x);
                 telemetry.addLine("NFS normal");
                 telemetry.update();
             }
         }
+/*
 
         //controls for climber
-        if(gamepad1.right_bumper){
+        if(gamepad1.right_trigger > 0){
             robot.climber.raise();
         }
-        else if(gamepad1.left_bumper){
+        else if(gamepad1.left_trigger > 0){
             robot.climber.lower();
         }
         else{
             robot.climber.stop();
         }
-
-        //controls for extender
-        if(gamepad1.right_trigger > 0){
-            robot.markerSystem.extend();
-        }
-        else if(gamepad1.left_trigger > 0){
-            robot.markerSystem.retract();
-        }
-        else{
-            robot.markerSystem.stop();
-        }
-
-        //controls for marker
-        if(toggle.toggle(gamepad1.dpad_right)){
-            robot.markerSystem.drop();
-        }
-        else{
-            robot.markerSystem.raise();
-        }
+*/
 
         //telemetry
-        telemetry.addData("Left Front Motor Speed: ", robot.drivetrain.getData()[0]);
-        telemetry.addData("Right Front Motor Speed: ", robot.drivetrain.getData()[1]);
-        telemetry.addData("Left Back Motor Speed: ", robot.drivetrain.getData()[2]);
-        telemetry.addData("Right Back Motor Speed: ", robot.drivetrain.getData()[3]);
-        telemetry.addData("Actuator Power:",robot.climber.getData()[0]);
-        telemetry.addData("Actuator Position:",robot.climber.getData()[1]);
+        telemetry.addData("Left Front Motor Speed: ", robot.motorFrontLeft.getPower());
+        telemetry.addData("Right Front Motor Speed: ", robot.motorFrontRight.getPower());
+        telemetry.addData("Left Back Motor Speed: ", robot.motorBackLeft.getPower());
+        telemetry.addData("Right Back Motor Speed: ", robot.motorBackRight.getPower());
+ /*       telemetry.addData("Actuator Power:",robot.climber.getData()[0]);
+        telemetry.addData("Actuator Position:",robot.climber.getData()[1]);*/
+        telemetry.addData("Range distance:", currDistance);
         telemetry.update();
-
     }
 }

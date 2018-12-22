@@ -7,12 +7,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.Subsystems.GoldFinder;
 
 @Autonomous(name = "DemoAuto")
 public class DemoAuto extends LinearOpMode implements Constants,AutonomousOpMode {
 
     private Hardware robot = new Hardware();
+    private Drivetrain drivetrain = new Drivetrain(robot);
 
     public boolean getOpModeIsActive()
     {
@@ -36,18 +38,17 @@ public class DemoAuto extends LinearOpMode implements Constants,AutonomousOpMode
         waitForStart();
 
         gold.startOpenCV(hardwareMap);
-        robot.drivetrain.stop();
+        drivetrain.stop();
         sleep(5000);
         while(getOpModeIsActive() && !gold.isFound()){
-            robot.drivetrain.rotate(-0.27);
+            drivetrain.rotate(-0.27);
             telemetry.addData("Aligned:", gold.getAligned());
             telemetry.addData("Pos:",gold.getXPosition());
             telemetry.update();
         }
-        sleep(1000);
-        robot.drivetrain.stop();
+        sleep(500);
+        drivetrain.stop();
         gold.alignGold();
-
 
         if(!getOpModeIsActive()){
             gold.disable();
