@@ -19,6 +19,10 @@ public class PIDController implements Constants{
         this.KD = KD;
         this.maxI = maxI;
     }
+    public PIDController(double KP, double KI){
+        this.KP = KP;
+        this.KI = KI;
+    }
 
     public double power(double target, double currentLoc){
         double error = target - currentLoc;

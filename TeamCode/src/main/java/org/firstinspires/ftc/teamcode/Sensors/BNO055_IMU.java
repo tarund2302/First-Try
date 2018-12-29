@@ -13,8 +13,7 @@ public class BNO055_IMU implements Runnable{
     private final BNO055IMU imu;
     private AutonomousOpMode auto;
 
-    public BNO055_IMU(String name, Hardware hardware)
-    {
+    public BNO055_IMU(String name, Hardware hardware){
         imu = hardware.getHardwareMap().get(BNO055IMU.class, name);
         setParameters();
         auto = hardware.auto;
@@ -22,8 +21,7 @@ public class BNO055_IMU implements Runnable{
         updateYaw.start();
     }
 
-    private void setParameters()
-    {
+    private void setParameters(){
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.useExternalCrystal = true;
@@ -34,8 +32,7 @@ public class BNO055_IMU implements Runnable{
         imu.initialize(parameters);
     }
 
-    public void updateRelativeYaw()
-    {
+    public void updateRelativeYaw(){
         if (lastAngle > 90 && getAngles()[0] < 0) {
             relativeYaw = 180 * Math.round(relativeYaw/180) + (180 + getAngles()[0] );
         }
@@ -56,8 +53,7 @@ public class BNO055_IMU implements Runnable{
         return relativeYaw;
     }
 
-    public double[] getAngles()
-    {
+    public double[] getAngles(){
         Quaternion quatAngles = imu.getQuaternionOrientation();
 
         double w = quatAngles.w;
@@ -72,12 +68,24 @@ public class BNO055_IMU implements Runnable{
         return new double[]{yaw,pitch,roll};
     }
 
-    public double getYaw() {
-        return getAngles()[0];
+    public void resetAngle(){
+        relativeYaw = 0;
     }
 
-    public void run()
-    {
+
+    public double adjustAngle(double angle){
+        while (angle > 180) angle -= 360;
+        while (angle <= -180) angle += 360;
+        return angle;
+    }
+
+    public double getYaw() {return getAngles()[0];}
+
+    public double getRoll(){return getAngles()[1];}
+
+    public double getPitch(){return getAngles()[2];}
+
+    public void run(){
         if(auto == null){
             return;
         }
@@ -96,19 +104,11 @@ public class BNO055_IMU implements Runnable{
                 Thread.sleep(10);
             }
             catch (InterruptedException e) {
-
             }
         }
-
     }
 
     public String dataOutput() {
         return String.format("Yaw: %.3f  Pitch: %.3f  Roll: %.3f", getAngles()[0], getAngles()[1], getAngles()[2]);
     }
-
-
-
-
-
-
 }

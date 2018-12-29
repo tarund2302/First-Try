@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
@@ -10,11 +11,14 @@ import org.firstinspires.ftc.teamcode.Hardware.Hardware;
 public class ServoPositioning extends OpMode{
 
     public Servo servo;
+    //double currPosition = servo.getPosition();
+
     @Override
     public void init() {
         servo = hardwareMap.servo.get("servo");
-        servo.setPosition(0);
+        //servo.setPosition(0);
     }
+
     @Override
     public void loop() {
         double currPosition = servo.getPosition();

@@ -1,18 +1,6 @@
 package org.firstinspires.ftc.teamcode.Control;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Hardware.Hardware;
-import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
-
 public interface Constants {
-
-    //Hardware HardwareMap;
-
-    //public AutonomousOpMode auto;
-
-    //public Telemetry telemetry;
-
-    //public Drivetrain drivetrain;
 
     //hook positions
     double HOOK_UP_POSITION = 0;
@@ -55,14 +43,29 @@ public interface Constants {
     double RAISE_POSITION = NUM_OF_CLIMB_REVS*ORBITAL_3_7_COUNTS_PER_REV;
     double LOWER_POSITION = 0;
 
+    double LED_PERIOD = 10;
+    double GAMEPAD_LOCKOUT = 500;
+
     double NANOSECS_PER_MIN = 6e+10;
     long NANOSECS_PER_MILISEC = 1000000;
+    double HALF = 0.5;
 
-    //drive PID
-    double dtKP = 0.004;
+    double dtKP = 0.001;
     double dtKI = 0;
     double dtKD = 0;
     double dtMaxI = 1;
+
+    //drive PID
+    double distanceKP = 0.004;
+    double distanceKI = 0;
+    double distanceKD = 0;
+    double distanceMaxI = 1;
+
+    //angle correction PID
+    double angleCorrectionKP = 0.001;
+    double angleCorrectionKI = 0;
+    double angleCorrectionKD = 0;
+    double angleCorrectionMaxI = 1;
 
     //turn angle (< 50) PID
     double turnKP = 0.002;
@@ -75,6 +78,18 @@ public interface Constants {
     double turnBigKI = 0;
     double turnBigKD = 0;
     double turnBigMaxI = 1;
+
+    //test turn PID
+    double testTurnKP = 0.002;
+    double testTurnKI = 0;
+    double testTurnKD = 0;
+    double testTurnMaxI = 1;
+
+    double bigTestTurnKP = 0.013;
+    double bigTestTurnKI = 0;
+    double bigTestTurnKD = 0;
+    double bigTestTurnMaxI = 1;
+
 
     //turn one side PID
     double sideKP = 0.001;

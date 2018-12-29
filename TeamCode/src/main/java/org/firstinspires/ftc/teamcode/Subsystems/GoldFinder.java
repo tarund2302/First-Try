@@ -50,7 +50,7 @@ public class GoldFinder extends DogeCVDetector implements Constants {
 
     // Detector settings
     public double alignPosOffset  = 0;    // How far from center frame is aligned
-    public double alignSize       = 1000;  // How wide is the margin of error for alignment
+    public double alignSize       = 100;  // How wide is the margin of error for alignment
 
     public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
@@ -106,7 +106,7 @@ public class GoldFinder extends DogeCVDetector implements Constants {
 
         // Current result
         Rect bestRect = null;
-        double bestDifference = Double.MAX_VALUE; // MAX_VALUE since less diffrence = better
+        double bestDiffrence = Double.MAX_VALUE; // MAX_VALUE since less diffrence = better
 
         // Loop through the contours and score them, searching for the best result
         for(MatOfPoint cont : contoursYellow){
@@ -117,8 +117,8 @@ public class GoldFinder extends DogeCVDetector implements Constants {
             Imgproc.rectangle(displayMat, rect.tl(), rect.br(), new Scalar(0,0,255),2); // Draw rect
 
             // If the result is better then the previously tracked one, set this rect as the new best
-            if(score < bestDifference){
-                bestDifference = score;
+            if(score < bestDiffrence){
+                bestDiffrence = score;
                 bestRect = rect;
             }
         }
@@ -238,34 +238,43 @@ public class GoldFinder extends DogeCVDetector implements Constants {
     }
 
     public void alignGold() {
-        PIDController alignGold = new PIDController(alignGoldKP, alignGoldKI, alignGoldKD, alignGoldMaxI);
+        //PIDController alignGold = new PIDController(alignGoldKP, alignGoldKI, alignGoldKD, alignGoldMaxI);
+        PIDController alignGold = new PIDController(alignGoldKP,alignGoldKI);
         long startTime = System.nanoTime();
         long stopState = 0;
 
-        while(opModeIsActive() && (stopState <= 1000)){
-            double power = alignGold.power(315,getXPosition());
+        while(true){
+            double power = alignGold.power(300,getXPosition());
             telemetry.addLine("PIDAlign");
-            telemetry.addData("Stopstate: ", stopState);
             telemetry.addData("Aligned:",getAligned());
             telemetry.addData("Found:",isFound());
             telemetry.addData("Pos:",getXPosition());
+            telemetry.addData("Power:",power);
             telemetry.addData("Heading:",hardware.imu.getYaw());
             telemetry.addLine(" ");
             telemetry.addData("KP*error: ",alignGold.returnVal()[0]);
             telemetry.addData("KI*i: ",alignGold.returnVal()[1]);
-            telemetry.addData("KD*d: ",alignGold.returnVal()[2]);
             telemetry.update();
+
+            if(Math.abs(power) > .5){
+                if(power>0){
+                    power=.5;
+                }
+                else{
+                    power=-.5;
+                }
+            }
 
             drivetrain.leftDrive(power);
             drivetrain.rightDrive(-power);
-/*
-            if (Math.abs(315-getXPosition()) <= 25) {
+
+            /*if (Math.abs(315-getXPosition()) <= 25) {
                 stopState = (System.nanoTime() - startTime) / 1000000;
             }
             else {
                 startTime = System.nanoTime();
             }
-            *//*drivetrain.stop();*/
+            drivetrain.stop();*/
         }
     }
 

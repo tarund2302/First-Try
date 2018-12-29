@@ -1,50 +1,52 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
+import org.firstinspires.ftc.teamcode.Control.Direction;
 import org.firstinspires.ftc.teamcode.Control.PIDController;
-import org.firstinspires.ftc.teamcode.Control.Toggle;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
-
-
+import org.firstinspires.ftc.teamcode.Sensors.BNO055_IMU;
+import org.firstinspires.ftc.teamcode.Sensors.MaxbotixUltrasonicSensor;
 
 public class Drivetrain implements Constants {
 
-    public DcMotor motorFrontLeft;
-    public DcMotor motorFrontRight;
-    public DcMotor motorBackLeft;
-    public DcMotor motorBackRight;
+    private DcMotor motorFrontLeft;
+    private DcMotor motorFrontRight;
+    private DcMotor motorBackLeft;
+    private DcMotor motorBackRight;
 
     private Telemetry telemetry;
     private AutonomousOpMode auto;
     private Hardware hardware;
+    private BNO055_IMU imu;
+   // private MaxbotixUltrasonicSensor rangeSensor;
+    private Gamepad gamepad1= new Gamepad();
     private double yDirection;
     private double xDirection;
-    public boolean leftSide = false;
+    private double leftStickY = gamepad1.left_stick_y;
+    private double rightStickX = gamepad1.right_stick_x;
+    private double rightStickY = gamepad1.right_stick_y;
 
-    PIDController controlDrive = new PIDController(dtKP,dtKI,dtKD,dtMaxI);
-    PIDController turnAngle =new PIDController(turnKP,turnKI,turnKD,turnMaxI);
-    PIDController smallTurnAngle = new PIDController(turnBigKP, turnBigKI, turnBigKD,turnBigMaxI);
+    PIDController controlDrive = new PIDController(distanceKP,distanceKI,distanceKD,distanceMaxI);
+    PIDController turnAngle =new PIDController(turnBigKP,turnBigKI,turnBigKD,turnBigMaxI);
+    PIDController smallTurnAngle = new PIDController(turnKP, turnKI, turnKD,turnMaxI);
+    PIDController testTurn = new PIDController(testTurnKP,testTurnKI,testTurnKD, testTurnMaxI);
+    PIDController bigTestTurn = new PIDController(bigTestTurnKP,bigTestTurnKI,bigTestTurnKD, bigTestTurnMaxI);
     PIDController rangeDistance = new PIDController(rangeKP, rangeKI, rangeKD, rangeMaxI);
     PIDController turnSide = new PIDController(sideKP, sideKI, sideKD, sideMaxI);
     PIDController bigTurnSide = new PIDController(bigSideKP, bigSideKI, bigSideKD, sideMaxI);
+    PIDController angleCorrection = new PIDController(angleCorrectionKP,angleCorrectionKI,angleCorrectionKD, angleCorrectionMaxI);
 
-   /* public double frontLeftData = motorFrontLeft.getPower();
+/*    public double frontLeftData = motorFrontLeft.getPower();
     public double frontRightData = motorFrontRight.getPower();
     public double backLeftData = motorBackLeft.getPower();
     public double backRightData = motorBackRight.getPower();*/
 
-    public Drivetrain(Hardware hardware)
-    {
+    public Drivetrain(Hardware hardware){
         this.hardware = hardware;
         motorFrontLeft = hardware.motorFrontLeft;
         motorFrontRight = hardware.motorFrontRight;
@@ -52,39 +54,26 @@ public class Drivetrain implements Constants {
         motorBackRight = hardware.motorBackRight;
         auto = hardware.auto;
         telemetry = hardware.telemetry;
+        imu = hardware.imu;
+        //rangeSensor = hardware.rangeSensor;
 
-        /*//reverse left side of drivetrain
+        //reverse left side of drivetrain
         hardware.motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
         hardware.motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
-
-*/
     }
-
 
     //left drive contorls
-    public void leftDrive(double power)
-    {
+    public void leftDrive(double power){
         motorFrontLeft.setPower(power);
         motorBackLeft.setPower(power);
-
     }
-
     //right drive controls
-    public void rightDrive(double power)
-    {
+    public void rightDrive(double power){
         motorFrontRight.setPower(power);
         motorBackRight.setPower(power);
     }
 
-    /*public void drive(double leftPower, double rightPower)
-    {
-        hardware.motorFrontLeft.setPower(leftPower);
-        hardware.motorBackLeft.setPower(leftPower);
-        hardware.motorFrontRight.setPower(rightPower);
-        hardware.motorBackRight.setPower(rightPower);
-    }*/
-
-    public void driveNFS(double leftStickY, double rightStickX){
+    public void driveNFS(){
         yDirection = SPEED_MUlTIPLIER * leftStickY;
         xDirection = SPEED_MUlTIPLIER * rightStickX;
 
@@ -93,14 +82,38 @@ public class Drivetrain implements Constants {
 
         leftDrive(y);
         rightDrive(x);
-    }
 
-    public void driveTank(double leftStickY, double rightStickY){
+        joystickStop(leftStickY,rightStickX);
+    }
+    public void invertDriveNFS(){
+        yDirection = SPEED_MUlTIPLIER * -leftStickY;
+        xDirection = SPEED_MUlTIPLIER * -rightStickX;
+
+        double y = yDirection - xDirection;
+        double x = yDirection + xDirection;
+
+        leftDrive(y);
+        rightDrive(x);
+
+        joystickStop(leftStickY,rightStickX);
+    }
+    public void driveTank(){
         leftStickY *= SPEED_MUlTIPLIER;
         rightStickY *= SPEED_MUlTIPLIER;
 
         leftDrive(leftStickY);
         rightDrive(rightStickY);
+
+        joystickStop(leftStickY,rightStickY);
+    }
+    public void invertDriveTank(){
+        leftStickY *= SPEED_MUlTIPLIER;
+        rightStickY *= SPEED_MUlTIPLIER;
+
+        leftDrive(-leftStickY);
+        rightDrive(-rightStickY);
+
+        joystickStop(leftStickY,rightStickY);
     }
 
     //stop drivetrain
@@ -108,16 +121,25 @@ public class Drivetrain implements Constants {
         leftDrive(0);
         rightDrive(0);
     }
-
+    //stop for a certain amount of time
     public void stopTime(long time){
-        leftDrive(0);
-        rightDrive(0);
-        sleep(time);
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        while(stopState <= time){
+            stop();
+            stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+        }
+    }
+    //stop when joysticks are not moved
+    public void joystickStop(double joystick1, double joystick2){
+        if((joystick1 == 0 && joystick2 == 0)){
+            stop();
+        }
     }
 
     //reset encoders
-    public void eReset()
-    {
+    public void eReset(){
         for(DcMotor motor: hardware.drivetrainMotors){
             motor.setPower(0);
             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -125,46 +147,60 @@ public class Drivetrain implements Constants {
         }
 
         //send data showing encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d",
-                motorFrontLeft.getCurrentPosition(),
-                motorBackLeft.getCurrentPosition(),
-                motorFrontRight.getCurrentPosition(),
-                motorBackRight.getCurrentPosition());
+        telemetry.addData("Status:",motorFrontLeft.getCurrentPosition());
         telemetry.update();
     }
 
-    public void driveForward(double speed)
-    {
+    public void autoDrive(double speed, Direction DIRECTION){
+        speed *= DIRECTION.value;
         leftDrive(speed);
         rightDrive(speed);
 
         while(opModeIsActive()){
-            hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
+            telemetry.addData("Speed:",motorFrontLeft.getPower());
         }
-
     }
 
-    public void driveDistance(double distance)
-    {
-        eReset();
-        double counts = distanceToCounts(distance);
+    public void driveForTime(double power, double time, Direction DIRECTION){
         long startTime = System.nanoTime();
         long stopState = 0;
 
-        while(opModeIsActive() && (stopState <= 1000))
-        {
-            double ePos = (hardware.motorFrontLeft.getCurrentPosition());
-            double power = controlDrive.power(counts, ePos);
-            hardware.telemetry.addData("Power", power);
-            hardware.telemetry.addData("Distance", countsToDistance(ePos));
-            hardware.telemetry.addData("Error:", Math.abs(counts-ePos));
-
+        while(stopState <= time){
+            power *= DIRECTION.value;
             leftDrive(power);
             rightDrive(power);
+            stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            telemetry.addData("Speed:",power);
+            telemetry.addData("Stop state",stopState);
+            telemetry.update();
+        }
+        stop();
+    }
+    public void driveDistance(double distance, Direction DIRECTION){
+        eReset();
+        distance*= DIRECTION.value;
+        double counts = distanceToCounts(distance);
+        long startTime = System.nanoTime();
+        long stopState = 0;
+        double initialHeading = imu.getRelativeYaw();
+
+        while(opModeIsActive() && (stopState <= 1000))
+        {
+            double ePos = (motorFrontLeft.getCurrentPosition());
+            double distancePower = controlDrive.power(counts, ePos);
+            double angleCorrectionPower = angleCorrection.power(initialHeading,imu.getRelativeYaw());
+            double leftPower = distancePower - angleCorrectionPower;
+            double rightPower = distancePower + angleCorrectionPower;
+            telemetry.addData("Power", distancePower);
+            telemetry.addData("Distance", countsToDistance(ePos));
+            telemetry.addData("Error:", Math.abs(counts-ePos));
+
+            leftDrive(leftPower);
+            rightDrive(rightPower);
 
             if(Math.abs(counts- ePos)<= distanceToCounts(DISTANCE_TOLERANCE))
             {
-                hardware.telemetry.addData("Error:", Math.abs(counts-ePos));
+                telemetry.addData("Error:", Math.abs(counts-ePos));
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
 
@@ -175,22 +211,29 @@ public class Drivetrain implements Constants {
         }
         stop();
     }
+
+/*
+
     public void driveTillRangeDistance(double distance){
 
         long startTime = System.nanoTime();
         long stopState = 0;
+        double initialHeading = imu.getRelativeYaw();
 
         while(opModeIsActive() && (stopState <= 1000)){
-            double currDistance = hardware.rangeSensor.getDistance(DistanceUnit.INCH);
-            double power = rangeDistance.power(distance, currDistance);
-            hardware.telemetry.addData("Power:",power);
-            hardware.telemetry.addData("Distance:",currDistance);
-            hardware.telemetry.addData("Error:",Math.abs(distance-currDistance));
-            hardware.telemetry.addData("StopState:",stopState);
-            hardware.telemetry.update();
+            double currDistance = rangeSensor.getDistance(DistanceUnit.INCH);
+            double rangePower = rangeDistance.power(distance, currDistance);
+            double angleCorrectionPower = angleCorrection.power(initialHeading,imu.getRelativeYaw());
+            double leftPower = rangePower - angleCorrectionPower;
+            double rightPower = rangePower + angleCorrectionPower;
+            telemetry.addData("Power:",rangePower);
+            telemetry.addData("Distance:",currDistance);
+            telemetry.addData("Error:",Math.abs(distance-currDistance));
+            telemetry.addData("StopState:",stopState);
+            telemetry.update();
 
-            leftDrive(-power);
-            rightDrive(-power);
+            leftDrive(-leftPower);
+            rightDrive(-rightPower);
 
             if(Math.abs(currDistance - distance) <= RANGE_DISTANCE_TOLERANCE){
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
@@ -198,51 +241,51 @@ public class Drivetrain implements Constants {
             else{
                 startTime = System.nanoTime();
             }
-
         }
-
         stop();
     }
+*/
 
+    public void rotate(double speed, Direction DIRECTION){
+        speed *= DIRECTION.value;
+        leftDrive(-speed);
+        rightDrive(speed);
+        telemetry.addData("Speed:",motorFrontLeft.getPower());
+        telemetry.update();
+    }
 
-    public void rotateForTime(double power, double time){
-        eReset();
+    public void rotateForTime(double power, double time, Direction DIRECTION){
         long startTime = System.nanoTime();
         long stopState = 0;
 
         while(stopState <= time){
-            motorFrontLeft.setPower(-power);
-            motorBackLeft.setPower(-power);
-            motorFrontRight.setPower(power);
-            motorBackRight.setPower(power);
-
+            power *= DIRECTION.value;
+            leftDrive(-power);
+            rightDrive(power);
             stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            telemetry.addData("Speed:",power);
+            telemetry.addData("Stop state",stopState);
+            telemetry.update();
         }
-
         stop();
-
     }
 
-    public void rotate(double speed){
-        leftDrive(-speed);
-        rightDrive(speed);
-        hardware.telemetry.addData("Speed:",motorFrontLeft.getPower());
-        hardware.telemetry.update();
-    }
-
-    public void turnAngle(double degrees){
+    public void turnAngle(double degrees, Direction DIRECTION){
+        //imu.resetAngle();
         long startTime = System.nanoTime();
         long stopState = 0;
+        degrees*=DIRECTION.value;
+        double targetAngle = imu.getRelativeYaw() + degrees;
 
         while(opModeIsActive() && (stopState <= 1000)){
-            double gPos = hardware.imu.getRelativeYaw();
-            double power = Math.abs(degrees) < 50 ? smallTurnAngle.power(degrees,gPos) : turnAngle.power(degrees,gPos);
+            double gPos = imu.getRelativeYaw();
+            double power = Math.abs(targetAngle) < 50 ? smallTurnAngle.power(targetAngle,gPos) : turnAngle.power(targetAngle,gPos);
 
             leftDrive(-power);
             rightDrive(power);
 
-            if(degrees < 50){
-                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+            if(Math.abs(targetAngle) < 50){
+                hardware.telemetry.addData("Angle:",imu.getRelativeYaw());
                 hardware.telemetry.addLine("");
                 hardware.telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
                 hardware.telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
@@ -250,9 +293,8 @@ public class Drivetrain implements Constants {
                 hardware.telemetry.addData("Power: ", power);
                 hardware.telemetry.update();
             }
-
             else{
-                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                hardware.telemetry.addData("Angle:",imu.getRelativeYaw());
                 hardware.telemetry.addLine("");
                 hardware.telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
                 hardware.telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
@@ -260,74 +302,85 @@ public class Drivetrain implements Constants {
                 hardware.telemetry.update();
             }
 
-            if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE){
+            if (Math.abs(targetAngle) < 50 ? Math.abs(gPos - targetAngle) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(targetAngle)) <= IMU_TOLERANCE){
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
-
             else{
                 startTime = System.nanoTime();
-            }
-
-            if(System.nanoTime()/NANOSECS_PER_MILISEC-startTime/NANOSECS_PER_MILISEC>3000){
-                break;
             }
         }
         stop();
     }
 
-    public void sideTurnAngle(double degrees, boolean leftSide){
-
+    public void sideTurnAngle(double degrees, String side){
+        //imu.resetAngle();
         long startTime = System.nanoTime();
         long stopState = 0;
 
         while(opModeIsActive() && (stopState <= 1000)){
-            double gPos = hardware.imu.getRelativeYaw();
+            double gPos = imu.getRelativeYaw();
             double power = Math.abs(degrees) < 50 ? turnSide.power(degrees,gPos) : bigTurnSide.power(degrees,gPos);
 
-            if(leftSide){
+            if(side == "left"){
                 leftDrive(power);
                 rightDrive(0);
             }
-            else if(!leftSide){
+            else if(side == "right"){
                 leftDrive(0);
                 rightDrive(power);
             }
-
-            if(degrees < 50){
-                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
-                hardware.telemetry.addLine("");
-                hardware.telemetry.addData("KP*error: ", turnSide.returnVal()[0]);
-                hardware.telemetry.addData("KI*i: ", turnSide.returnVal()[1]);
-                hardware.telemetry.addData("KD*d: ", turnSide.returnVal()[2]);
-                hardware.telemetry.addData("Power: ", power);
-                hardware.telemetry.update();
+            if(Math.abs(degrees) < 50){
+                telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                telemetry.addLine("");
+                telemetry.addData("KP*error: ", turnSide.returnVal()[0]);
+                telemetry.addData("KI*i: ", turnSide.returnVal()[1]);
+                telemetry.addData("KD*d: ", turnSide.returnVal()[2]);
+                telemetry.addData("Power: ", power);
+                telemetry.update();
             }
             else{
-                hardware.telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
-                hardware.telemetry.addLine("");
-                hardware.telemetry.addData("KP*error: ", bigTurnSide.returnVal()[0]);
-                hardware.telemetry.addData("KI*i: ", bigTurnSide.returnVal()[1]);
-                hardware.telemetry.addData("KD*d: ", bigTurnSide.returnVal()[2]);
-                hardware.telemetry.update();
+                telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
+                telemetry.addLine("");
+                telemetry.addData("KP*error: ", bigTurnSide.returnVal()[0]);
+                telemetry.addData("KI*i: ", bigTurnSide.returnVal()[1]);
+                telemetry.addData("KD*d: ", bigTurnSide.returnVal()[2]);
+                telemetry.update();
             }
 
             if (Math.abs(degrees) < 50 ? Math.abs(gPos - degrees) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(degrees)) <= IMU_TOLERANCE){
                 stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
             }
-
             else{
                 startTime = System.nanoTime();
-            }
-
-            if(System.nanoTime()/NANOSECS_PER_MILISEC-startTime/NANOSECS_PER_MILISEC>3000){
-                break;
             }
         }
         stop();
     }
 
-    public void turnRelativeAngle(double degrees){
-        turnAngle(hardware.imu.getYaw()+degrees);
+    public void testAngleCorrection(){
+        double initialHeading = imu.getRelativeYaw();
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        while(opModeIsActive() && (stopState <= 1500)){
+            double angleCorrectionPower = angleCorrection.power(initialHeading,imu.getRelativeYaw());
+
+            telemetry.addData("Power:",angleCorrectionPower);
+            telemetry.addData("Heading:",imu.getRelativeYaw());
+            telemetry.addData("Error:", Math.abs(initialHeading-imu.getRelativeYaw()));
+            telemetry.update();
+
+            leftDrive(-angleCorrectionPower);
+            rightDrive(angleCorrectionPower);
+
+            if(Math.abs(imu.getRelativeYaw() - initialHeading) <= IMU_TOLERANCE){
+                stopState = (System.nanoTime() - startTime) / NANOSECS_PER_MILISEC;
+            }
+            else{
+                startTime = System.nanoTime();
+            }
+        }
+        //stop();
     }
 
     public final void sleep(long milliseconds) {
@@ -338,10 +391,12 @@ public class Drivetrain implements Constants {
         }
     }
 
-  /*  public double[] getData(){
+/*    public double[] getData(){
         double dtData[] = {frontLeftData,frontRightData,backLeftData,backRightData};
         return dtData;
     }*/
+
+
 
     public boolean opModeIsActive()
     {
@@ -357,10 +412,5 @@ public class Drivetrain implements Constants {
     {
         return (counts*WHEEL_CIRCUM *DRIVEN_GEAR_REDUCTION)/NEVEREST_40_COUNTS_PER_REV;
     }
-
-
-
-
-
 
 }
