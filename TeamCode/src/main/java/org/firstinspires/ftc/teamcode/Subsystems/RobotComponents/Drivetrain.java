@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.RobotComponents;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -14,10 +14,10 @@ import org.firstinspires.ftc.teamcode.Sensors.MaxbotixUltrasonicSensor;
 
 public class Drivetrain implements Constants {
 
-    private DcMotor motorFrontLeft;
-    private DcMotor motorFrontRight;
-    private DcMotor motorBackLeft;
-    private DcMotor motorBackRight;
+    public DcMotor motorFrontLeft;
+    public DcMotor motorFrontRight;
+    public DcMotor motorBackLeft;
+    public DcMotor motorBackRight;
 
     private Telemetry telemetry;
     private AutonomousOpMode auto;
@@ -27,9 +27,6 @@ public class Drivetrain implements Constants {
     private Gamepad gamepad1= new Gamepad();
     private double yDirection;
     private double xDirection;
-    private double leftStickY = gamepad1.left_stick_y;
-    private double rightStickX = gamepad1.right_stick_x;
-    private double rightStickY = gamepad1.right_stick_y;
 
     PIDController controlDrive = new PIDController(distanceKP,distanceKI,distanceKD,distanceMaxI);
     PIDController turnAngle =new PIDController(turnBigKP,turnBigKI,turnBigKD,turnBigMaxI);
@@ -58,9 +55,10 @@ public class Drivetrain implements Constants {
         //rangeSensor = hardware.rangeSensor;
 
         //reverse left side of drivetrain
-        hardware.motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
-        hardware.motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorFrontLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
     }
+
 
     //left drive contorls
     public void leftDrive(double power){
@@ -73,47 +71,39 @@ public class Drivetrain implements Constants {
         motorBackRight.setPower(power);
     }
 
-    public void driveNFS(){
-        yDirection = SPEED_MUlTIPLIER * leftStickY;
-        xDirection = SPEED_MUlTIPLIER * rightStickX;
+    public void driveNFS(Gamepad gamepad){
+        yDirection = SPEED_MUlTIPLIER * /*leftStickY*/gamepad.left_stick_y;
+        xDirection = SPEED_MUlTIPLIER * /*rightStickX*/gamepad.right_stick_x;
 
-        double y = yDirection - xDirection;
-        double x = yDirection + xDirection;
+        double left = yDirection - xDirection;
+        double right = yDirection + xDirection;
 
-        leftDrive(y);
-        rightDrive(x);
-
-        joystickStop(leftStickY,rightStickX);
+        leftDrive(left);
+        rightDrive(right);
     }
-    public void invertDriveNFS(){
+    public void invertDriveNFS(double leftStickY, double rightStickX){
         yDirection = SPEED_MUlTIPLIER * -leftStickY;
         xDirection = SPEED_MUlTIPLIER * -rightStickX;
 
-        double y = yDirection - xDirection;
-        double x = yDirection + xDirection;
+        double left = yDirection - xDirection;
+        double right = yDirection + xDirection;
 
-        leftDrive(y);
-        rightDrive(x);
-
-        joystickStop(leftStickY,rightStickX);
+        leftDrive(left);
+        rightDrive(right);
     }
-    public void driveTank(){
+    public void driveTank(double leftStickY, double rightStickY){
         leftStickY *= SPEED_MUlTIPLIER;
         rightStickY *= SPEED_MUlTIPLIER;
 
         leftDrive(leftStickY);
         rightDrive(rightStickY);
-
-        joystickStop(leftStickY,rightStickY);
     }
-    public void invertDriveTank(){
+    public void invertDriveTank(double leftStickY, double rightStickY){
         leftStickY *= SPEED_MUlTIPLIER;
         rightStickY *= SPEED_MUlTIPLIER;
 
         leftDrive(-leftStickY);
         rightDrive(-rightStickY);
-
-        joystickStop(leftStickY,rightStickY);
     }
 
     //stop drivetrain
@@ -152,6 +142,7 @@ public class Drivetrain implements Constants {
     }
 
     public void autoDrive(double speed, Direction DIRECTION){
+        speed = Math.abs(speed);
         speed *= DIRECTION.value;
         leftDrive(speed);
         rightDrive(speed);
@@ -178,22 +169,23 @@ public class Drivetrain implements Constants {
     }
     public void driveDistance(double distance, Direction DIRECTION){
         eReset();
-        distance*= DIRECTION.value;
-        double counts = distanceToCounts(distance);
+        double target = Math.abs(distance)* DIRECTION.value;
+        double counts = distanceToCounts(target);
         long startTime = System.nanoTime();
         long stopState = 0;
         double initialHeading = imu.getRelativeYaw();
 
-        while(opModeIsActive() && (stopState <= 1000))
-        {
+        while(opModeIsActive() && (stopState <= 1000)){
             double ePos = (motorFrontLeft.getCurrentPosition());
             double distancePower = controlDrive.power(counts, ePos);
             double angleCorrectionPower = angleCorrection.power(initialHeading,imu.getRelativeYaw());
             double leftPower = distancePower - angleCorrectionPower;
             double rightPower = distancePower + angleCorrectionPower;
+            
             telemetry.addData("Power", distancePower);
             telemetry.addData("Distance", countsToDistance(ePos));
-            telemetry.addData("Error:", Math.abs(counts-ePos));
+            telemetry.addData("Error:", controlDrive.getError());
+            telemetry.update();
 
             leftDrive(leftPower);
             rightDrive(rightPower);
@@ -207,7 +199,9 @@ public class Drivetrain implements Constants {
             else{
                 startTime = System.nanoTime();
             }
-            telemetry.update();
+            if(startTime/NANOSECS_PER_MILISEC >= 5000){
+                break;
+            }
         }
         stop();
     }
@@ -241,13 +235,17 @@ public class Drivetrain implements Constants {
             else{
                 startTime = System.nanoTime();
             }
+            if(startTime/NANOSECS_PER_MILISEC >= 5000){
+                break;
+            }
         }
         stop();
     }
 */
 
     public void rotate(double speed, Direction DIRECTION){
-        speed *= DIRECTION.value;
+        speed = Math.abs(speed);
+         speed *= DIRECTION.value;
         leftDrive(-speed);
         rightDrive(speed);
         telemetry.addData("Speed:",motorFrontLeft.getPower());
@@ -259,6 +257,7 @@ public class Drivetrain implements Constants {
         long stopState = 0;
 
         while(stopState <= time){
+            power = Math.abs(power);
             power *= DIRECTION.value;
             leftDrive(-power);
             rightDrive(power);
@@ -274,6 +273,7 @@ public class Drivetrain implements Constants {
         //imu.resetAngle();
         long startTime = System.nanoTime();
         long stopState = 0;
+        degrees = Math.abs(degrees);
         degrees*=DIRECTION.value;
         double targetAngle = imu.getRelativeYaw() + degrees;
 
@@ -285,21 +285,25 @@ public class Drivetrain implements Constants {
             rightDrive(power);
 
             if(Math.abs(targetAngle) < 50){
-                hardware.telemetry.addData("Angle:",imu.getRelativeYaw());
-                hardware.telemetry.addLine("");
-                hardware.telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
-                hardware.telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
-                hardware.telemetry.addData("KD*d: ", smallTurnAngle.returnVal()[2]);
-                hardware.telemetry.addData("Power: ", power);
-                hardware.telemetry.update();
+                telemetry.addLine("Small Turn");
+                telemetry.addData("Angle:",imu.getRelativeYaw());
+                telemetry.addLine("");
+                telemetry.addData("KP*error: ", smallTurnAngle.returnVal()[0]);
+                telemetry.addData("KI*i: ", smallTurnAngle.returnVal()[1]);
+                telemetry.addData("KD*d: ", smallTurnAngle.returnVal()[2]);
+                telemetry.addData("Error: ", smallTurnAngle.getError());
+                telemetry.addData("Power: ", power);
+                telemetry.update();
             }
             else{
-                hardware.telemetry.addData("Angle:",imu.getRelativeYaw());
-                hardware.telemetry.addLine("");
-                hardware.telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
-                hardware.telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
-                hardware.telemetry.addData("KD*d: ", turnAngle.returnVal()[2]);
-                hardware.telemetry.update();
+                telemetry.addLine("Big Turn");
+                telemetry.addData("Angle:",imu.getRelativeYaw());
+                telemetry.addLine("");
+                telemetry.addData("KP*error: ", turnAngle.returnVal()[0]);
+                telemetry.addData("KI*i: ", turnAngle.returnVal()[1]);
+                telemetry.addData("KD*d: ", turnAngle.returnVal()[2]);
+                telemetry.addData("Error: ", turnAngle.getError());
+                telemetry.update();
             }
 
             if (Math.abs(targetAngle) < 50 ? Math.abs(gPos - targetAngle) <= IMU_TOLERANCE : Math.abs(Math.abs(gPos) - Math.abs(targetAngle)) <= IMU_TOLERANCE){
@@ -307,6 +311,9 @@ public class Drivetrain implements Constants {
             }
             else{
                 startTime = System.nanoTime();
+            }
+            if(startTime/NANOSECS_PER_MILISEC >= 5000){
+                break;
             }
         }
         stop();
@@ -330,20 +337,24 @@ public class Drivetrain implements Constants {
                 rightDrive(power);
             }
             if(Math.abs(degrees) < 50){
+                telemetry.addLine("Small Turn");
                 telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
                 telemetry.addLine("");
                 telemetry.addData("KP*error: ", turnSide.returnVal()[0]);
                 telemetry.addData("KI*i: ", turnSide.returnVal()[1]);
                 telemetry.addData("KD*d: ", turnSide.returnVal()[2]);
+                telemetry.addData("Error: ", turnSide.getError());
                 telemetry.addData("Power: ", power);
                 telemetry.update();
             }
             else{
+                telemetry.addLine("Big Turn");
                 telemetry.addData("Angle:",hardware.imu.getRelativeYaw());
                 telemetry.addLine("");
                 telemetry.addData("KP*error: ", bigTurnSide.returnVal()[0]);
                 telemetry.addData("KI*i: ", bigTurnSide.returnVal()[1]);
                 telemetry.addData("KD*d: ", bigTurnSide.returnVal()[2]);
+                telemetry.addData("Error: ", bigTurnSide.getError());
                 telemetry.update();
             }
 
@@ -352,6 +363,9 @@ public class Drivetrain implements Constants {
             }
             else{
                 startTime = System.nanoTime();
+            }
+            if(startTime/NANOSECS_PER_MILISEC >= 5000){
+                break;
             }
         }
         stop();
@@ -367,7 +381,7 @@ public class Drivetrain implements Constants {
 
             telemetry.addData("Power:",angleCorrectionPower);
             telemetry.addData("Heading:",imu.getRelativeYaw());
-            telemetry.addData("Error:", Math.abs(initialHeading-imu.getRelativeYaw()));
+            telemetry.addData("Error:", angleCorrection.getError());
             telemetry.update();
 
             leftDrive(-angleCorrectionPower);
@@ -383,34 +397,14 @@ public class Drivetrain implements Constants {
         //stop();
     }
 
-    public final void sleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-/*    public double[] getData(){
-        double dtData[] = {frontLeftData,frontRightData,backLeftData,backRightData};
-        return dtData;
-    }*/
-
-
-
     public boolean opModeIsActive()
     {
         return auto.getOpModeIsActive();
     }
-
-    public double distanceToCounts(double distance)
-    {
+    public double distanceToCounts(double distance){
         return (distance/WHEEL_CIRCUM)*DRIVE_GEAR_REDUCTION *NEVEREST_40_COUNTS_PER_REV;
     }
-
-    public double countsToDistance(double counts)
-    {
+    public double countsToDistance(double counts){
         return (counts*WHEEL_CIRCUM *DRIVEN_GEAR_REDUCTION)/NEVEREST_40_COUNTS_PER_REV;
     }
-
 }

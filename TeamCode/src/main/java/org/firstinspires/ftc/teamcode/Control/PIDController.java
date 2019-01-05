@@ -56,18 +56,14 @@ public class PIDController implements Constants{
         return KD;
     }
 
+    public double getError(){return error;}
 
-    public void setKP(double KP){
-        this.KP = KP;
-    }
 
-    public void setKI(double KI){
-        this.KI = KI;
-    }
+    public void setKP(double KP){this.KP = KP;}
 
-    public void setKD(double KD){
-        this.KD = KD;
-    }
+    public void setKI(double KI){this.KI = KI;}
+
+    public void setKD(double KD){this.KD = KD;}
 
     public void reset(){
         i = 0;

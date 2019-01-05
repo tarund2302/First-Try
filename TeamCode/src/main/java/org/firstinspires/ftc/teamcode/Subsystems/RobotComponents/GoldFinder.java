@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.RobotComponents;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
+import com.disnodeteam.dogecv.Dogeforia;
 import com.disnodeteam.dogecv.detectors.DogeCVDetector;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
 import com.disnodeteam.dogecv.filters.LeviColorFilter;
@@ -16,7 +17,6 @@ import org.firstinspires.ftc.teamcode.Control.PIDController;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
-import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
 
 import org.opencv.core.Mat;
@@ -237,7 +237,7 @@ public class GoldFinder extends DogeCVDetector implements Constants {
         enable();
     }
 
-    public void alignGold() {
+    public void demoAlignGold() {
         //PIDController alignGold = new PIDController(alignGoldKP, alignGoldKI, alignGoldKD, alignGoldMaxI);
         PIDController alignGold = new PIDController(alignGoldKP,alignGoldKI);
         long startTime = System.nanoTime();
@@ -267,14 +267,59 @@ public class GoldFinder extends DogeCVDetector implements Constants {
 
             drivetrain.leftDrive(power);
             drivetrain.rightDrive(-power);
+/*
+            if (Math.abs(315-getXPosition()) <= 25) {
+                stopState = (System.nanoTime() - startTime) / 1000000;
+            }
+            else {
+                startTime = System.nanoTime();
+            }*/
+            drivetrain.stop();
 
-            /*if (Math.abs(315-getXPosition()) <= 25) {
+            if(!opModeIsActive()){
+                disable();
+            }
+        }
+    }
+
+    public void alignGold() {
+        //PIDController alignGold = new PIDController(alignGoldKP, alignGoldKI, alignGoldKD, alignGoldMaxI);
+        PIDController alignGold = new PIDController(alignGoldKP,alignGoldKI);
+        long startTime = System.nanoTime();
+        long stopState = 0;
+
+        while(stopState <= 1000){
+            double power = alignGold.power(300,getXPosition());
+            telemetry.addLine("PIDAlign");
+            telemetry.addData("Aligned:",getAligned());
+            telemetry.addData("Found:",isFound());
+            telemetry.addData("Pos:",getXPosition());
+            telemetry.addData("Power:",power);
+            telemetry.addData("Heading:",hardware.imu.getYaw());
+            telemetry.addLine(" ");
+            telemetry.addData("KP*error: ",alignGold.returnVal()[0]);
+            telemetry.addData("KI*i: ",alignGold.returnVal()[1]);
+            telemetry.update();
+
+            if(Math.abs(power) > .5){
+                if(power>0){
+                    power=.5;
+                }
+                else{
+                    power=-.5;
+                }
+            }
+
+            drivetrain.leftDrive(power);
+            drivetrain.rightDrive(-power);
+
+            if (Math.abs(315-getXPosition()) <= 25) {
                 stopState = (System.nanoTime() - startTime) / 1000000;
             }
             else {
                 startTime = System.nanoTime();
             }
-            drivetrain.stop();*/
+            drivetrain.stop();
         }
     }
 

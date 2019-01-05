@@ -3,11 +3,16 @@ package org.firstinspires.ftc.teamcode.Control;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class Toggle {
-    boolean boolState = true;
+
     boolean currState = false;
     boolean prevState = false;
     boolean taskState = true;
     Gamepad gamepad = new Gamepad();
+
+    public Toggle(Gamepad gamepad){
+        this.gamepad = gamepad;
+    }
+
 
     public boolean toggle(boolean boolState){
 

@@ -2,61 +2,47 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Control.Toggle;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
-
-//v3 teleop code made by Tarun Dasari, Rookie Programmer of 3846 Maelstrom
-//last update: December 18, 2018
-
-
 
 @TeleOp(name ="TeleOp_Test")
 public class TeleOp_Test extends OpMode implements Constants {
 
     private Hardware robot = new Hardware();
-    private Toggle toggle = new Toggle();
-    private double xDirection;
+    private Toggle toggle = new Toggle(gamepad1);
     private double yDirection;
-    DcMotor winch;
-    /*private boolean leftStickButton = toggle.toggle(gamepad1.left_stick_button);
-    private boolean rightStickButton = toggle.toggle(gamepad1.right_stick_button);*/
-    //double currDistance = robot.rangeSensor.getDistance(DistanceUnit.INCH);
-    @Override
+    private double xDirection;
+
     public void init() {
-        //initialize hardware
         robot.init(hardwareMap);
-
-
     }
 
-    @Override
     public void loop() {
-        yDirection = SPEED_MUlTIPLIER * gamepad1.left_stick_y;
+/*        yDirection = SPEED_MUlTIPLIER * gamepad1.left_stick_y;
         xDirection = SPEED_MUlTIPLIER * gamepad1.right_stick_x;
 
-        double y = yDirection - xDirection;
-        double x = yDirection + xDirection;
+        double left = yDirection - xDirection;
+        double right = yDirection + xDirection;
 
-        robot.drivetrain.leftDrive(y);
-        robot.drivetrain.rightDrive(x);
+        robot.drivetrain.leftDrive(left);
+        robot.drivetrain.rightDrive(right);*/
 
-        if(gamepad1.a){
-            robot.winch.setPower(1);
-        }
-        else if (gamepad1.b){robot.winch.setPower(-1);}
-        else{robot.winch.setPower(0);}
+        robot.drivetrain.driveNFS(gamepad1);
+       robot.climber.driverControl(gamepad1);
+
+            if(gamepad1.dpad_up){robot.climber.autoRaise();}
+            else if(gamepad1.dpad_down){robot.climber.autoLower();}
+            else {robot.climber.liftStop();}
 
         //telemetry
-        telemetry.addData("Angle: ", robot.imu.getRelativeYaw());
-        telemetry.addData("Left Front Motor Speed: ", robot.motorFrontLeft.getPower());
-        telemetry.addData("Right Front Motor Speed: ", robot.motorFrontRight.getPower());
-        telemetry.addData("Left Back Motor Speed: ", robot.motorBackLeft.getPower());
-        telemetry.addData("Right Back Motor Speed: ", robot.motorBackRight.getPower());
-        //telemetry.addData("Range distance:", currDistance);
+        telemetry.addData("Left Front Speed: ", robot.motorFrontLeft.getPower());
+        telemetry.addData("Right Front Speed: ", robot.motorFrontRight.getPower());
+        telemetry.addData("Left Back Speed: ", robot.motorBackLeft.getPower());
+        telemetry.addData("Right Back Speed: ", robot.motorBackRight.getPower());
+        telemetry.addData("Latch Power: ", robot.latch.getPower());
+        telemetry.addData("Hang Position: ", robot.hangMotor.getCurrentPosition());
+        //telemetry.addData("Range distance:", robot.rangeSensor.getData());
         telemetry.update();
     }
 }

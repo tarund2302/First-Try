@@ -2,19 +2,16 @@ package org.firstinspires.ftc.teamcode.OpModes.AutoOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Control.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.Control.Constants;
 import org.firstinspires.ftc.teamcode.Control.Direction;
 import org.firstinspires.ftc.teamcode.Hardware.Hardware;
-import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
-import org.firstinspires.ftc.teamcode.Subsystems.GoldFinder;
+import org.firstinspires.ftc.teamcode.Subsystems.AutoPaths.DepotPaths;
+import org.firstinspires.ftc.teamcode.Subsystems.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.Subsystems.RobotComponents.GoldFinder;
 
 @Autonomous(name = "AutoOp")
 public class AutoOp_TestSensors extends LinearOpMode implements Constants, AutonomousOpMode
@@ -52,7 +49,7 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
         //test
 
         //testing for gyro
-        robot.drivetrain.turnAngle(40,Direction.LEFT);
+        /*robot.drivetrain.turnAngle(40,Direction.LEFT);
         robot.drivetrain.stopTime(2500);
         robot.drivetrain.turnAngle(35,Direction.RIGHT);
         robot.drivetrain.stopTime(5000);
@@ -60,7 +57,7 @@ public class AutoOp_TestSensors extends LinearOpMode implements Constants, Auton
         robot.drivetrain.stopTime(5000);
         robot.drivetrain.turnAngle(30,Direction.LEFT);
         robot.drivetrain.stop();
-
+*/
         /* //testing angle correction
         robot.drivetrain.testAngleCorrection();
         */

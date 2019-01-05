@@ -21,7 +21,7 @@ public interface Constants {
 
     double NEVEREST_20_COUNTS_PER_REV = 560; //extendo motor ticks
     double NEVEREST_40_COUNTS_PER_REV = 1120; //drivetrain motor ticks
-    double ORBITAL_3_7_COUNTS_PER_REV = 103; //actuator motor ticks
+    double NEVEREST_60_COUNTS_PER_REV = 1680;
     double SPEED_MUlTIPLIER = 0.5;
 
     double WHEEL_DIAMETER_INCHES = 4.0;
@@ -33,15 +33,14 @@ public interface Constants {
     double DISTANCE_TOLERANCE = .5;
     double IMU_TOLERANCE = 0.5;
     double RANGE_DISTANCE_TOLERANCE = 0.1;
-    double ACTUATOR_TOLERANCE = 10;
+    double HANG_TOLERANCE = 10;
+
+    double AUTO_RAISE_POSITION = 800;
+    double AUTO_LOWER_POSITION = 0;
 
     //used for encoder drive
     double DRIVE_SPEED = 0.5;
     double TURN_SPEED = 0.2;
-
-    double NUM_OF_CLIMB_REVS = 9;
-    double RAISE_POSITION = NUM_OF_CLIMB_REVS*ORBITAL_3_7_COUNTS_PER_REV;
-    double LOWER_POSITION = 0;
 
     double LED_PERIOD = 10;
     double GAMEPAD_LOCKOUT = 500;
@@ -120,6 +119,5 @@ public interface Constants {
     double climberMaxI = 0;
 
     int ALIGN_POSITION = -100;
-
 
 }
